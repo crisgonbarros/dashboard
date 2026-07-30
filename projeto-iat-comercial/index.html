@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>IAT — Dashboard Comercial</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root {
+  --bg:#0d0f14; --bg2:#141720; --bg3:#1c2030;
+  --border:rgba(255,255,255,.07); --border2:rgba(255,255,255,.13);
+  --text:#e8eaf0; --muted:#6b7280; --dim:#4b5563;
+  --accent:#4f8ef7; --green:#22c55e; --yellow:#eab308; --red:#ef4444;
+  --c1:#4f8ef7; --c2:#34d399; --c3:#fbbf24; --c4:#a78bfa; --c5:#94a3b8; --c6:#f87171; --c7:#fb923c;
+  --pad:20px; --r:12px; --rsm:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:14px;line-height:1.5;min-height:100vh;overflow-x:hidden}
+
+/* HEADER */
+header{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px var(--pad);position:sticky;top:0;z-index:100}
+.header-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:34px;height:34px;min-width:34px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;letter-spacing:-.5px}
+.logo-text{font-size:15px;font-weight:700;color:var(--text);white-space:nowrap}
+.logo-sub{font-size:11px;color:var(--muted)}
+.filters{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px}
+select{width:100%;background:var(--bg3);color:var(--text);border:1px solid var(--border2);border-radius:var(--rsm);padding:8px 28px 8px 10px;font-size:12px;cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+select:focus{border-color:var(--accent)}
+
+/* STATUS BAR */
+.status-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:6px var(--pad);font-size:11px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.sdot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px;flex-shrink:0}
+.sdot-green{background:var(--green)} .sdot-yellow{background:var(--yellow)} .sdot-gray{background:#94a3b8}
+
+/* MAIN */
+main{padding:var(--pad);max-width:1400px;margin:0 auto}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--kpi-color,var(--accent))}
+.kpi-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.kpi-value{font-size:20px;font-weight:800;color:var(--text);line-height:1.1}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* SECTION */
+.section{margin-bottom:16px}
+.section-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;height:100%}
+.card-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px}
+
+/* GRIDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+
+/* METAS */
+.meta-item{background:var(--bg3);border-radius:var(--rsm);padding:11px 12px;margin-bottom:8px}
+.meta-item:last-child{margin-bottom:0}
+.meta-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;gap:8px;flex-wrap:wrap}
+.meta-name{font-weight:700;font-size:13px}
+.meta-val{font-size:12px;color:var(--muted);white-space:nowrap}
+.progress-track{height:5px;background:rgba(255,255,255,.07);border-radius:3px;position:relative}
+.progress-fill{height:100%;border-radius:3px;min-width:2px}
+.progress-mark{position:absolute;top:-3px;width:2px;height:11px;border-radius:1px}
+.mark-base{background:var(--yellow)} .mark-ideal{background:var(--green)}
+.meta-footer{display:flex;justify-content:space-between;font-size:10px;color:var(--dim);margin-top:4px}
+.kpi-badge{display:inline-block;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px;vertical-align:middle}
+.badge-green{background:rgba(34,197,94,.15);color:var(--green)}
+.badge-yellow{background:rgba(234,179,8,.15);color:var(--yellow)}
+
+/* CAMPANHA */
+.campanha-card{background:linear-gradient(135deg,rgba(79,142,247,.07) 0%,rgba(52,211,153,.04) 100%);border:1px solid rgba(79,142,247,.22);border-radius:var(--r);padding:16px;height:100%;display:flex;flex-direction:column}
+.camp-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.camp-sub{font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.4}
+.camp-count{font-size:42px;font-weight:800;color:var(--text);line-height:1}
+.camp-count span{font-size:20px;font-weight:400;color:var(--muted)}
+.camp-track{height:7px;background:rgba(255,255,255,.07);border-radius:4px;margin:10px 0 6px;overflow:hidden}
+.camp-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--c2));transition:width .4s}
+.camp-status{font-size:11px;color:var(--muted);margin-bottom:12px}
+.bonus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px;margin-top:auto}
+.bonus-item{background:var(--bg3);border-radius:6px;padding:8px 10px}
+.bonus-name{font-size:10px;color:var(--muted);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bonus-val{font-size:13px;font-weight:700;color:var(--c2)}
+.bonus-pct{font-size:10px;color:var(--dim)}
+
+/* NOTE campanha — só julho */
+.camp-disabled{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r);padding:16px;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--dim);font-size:13px}
+
+/* CHARTS */
+.chart-wrap{position:relative;width:100%}
+
+/* LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.legend-sq{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:600px}
+th{text-align:left;color:var(--muted);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.06em;padding:0 10px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.pill{display:inline-block;font-size:10px;padding:2px 7px;border-radius:4px;font-weight:600;white-space:nowrap}
+.pill-green{background:rgba(34,197,94,.12);color:#4ade80}
+.pill-blue{background:rgba(79,142,247,.12);color:#7eb3ff}
+.pill-yellow{background:rgba(234,179,8,.12);color:#fde047}
+.pill-gray{background:rgba(148,163,184,.12);color:#94a3b8}
+.pill-red{background:rgba(239,68,68,.12);color:#f87171}
+
+/* MARKS LEGEND */
+.marks-legend{display:flex;gap:16px;margin-top:12px;font-size:10px;color:var(--muted);flex-wrap:wrap}
+.marks-legend span{display:flex;align-items:center;gap:5px}
+.mline{width:14px;height:2px;border-radius:1px}
+
+/* ── BREAKPOINTS ── */
+@media(max-width:900px){
+  :root{--pad:14px}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .kpi-value{font-size:18px}
+  .camp-count{font-size:36px}
+}
+@media(max-width:560px){
+  :root{--pad:12px}
+  header{padding:10px var(--pad)}
+  .header-top{margin-bottom:10px}
+  .logo-sub{display:none}
+  .logo-text{font-size:14px}
+  .filters{grid-template-columns:1fr 1fr}
+  .status-bar{flex-wrap:nowrap;overflow-x:auto;gap:10px;white-space:nowrap;padding:6px var(--pad)}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .kpi{padding:11px 12px}
+  .kpi-value{font-size:16px}
+  .kpi-sub{font-size:10px}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .camp-count{font-size:32px}
+  .bonus-grid{grid-template-columns:repeat(2,1fr)}
+  .chart-sm{height:160px!important}
+  .chart-md{height:200px!important}
+  .meta-name{font-size:12px}
+  .meta-val{font-size:11px}
+  table{font-size:11px}
+  td,th{padding:7px 8px}
+  .legend{display:grid;grid-template-columns:1fr 1fr}
+}
+@media(max-width:380px){
+  .filters{grid-template-columns:1fr}
+  .kpi-value{font-size:15px}
+  .bonus-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">IAT</div>
+      <div>
+        <div class="logo-text">Dashboard Comercial</div>
+        <div class="logo-sub">Projeto IAT — Controle de Vendas</div>
+      </div>
+    </div>
+  </div>
+  <div class="filters">
+    <select id="selMes" onchange="onMesChange()">
+      <option value="2026-07">Julho 2026</option>
+      <option value="2026-06">Junho 2026</option>
+      <option value="2026-05">Maio 2026</option>
+    </select>
+    <select id="selPeriodo" onchange="applyFilters()">
+      <option value="all">Mês todo</option>
+      <option value="today">Hoje</option>
+      <option value="yesterday">Ontem</option>
+      <option value="3d">Últimos 3 dias</option>
+      <option value="7d">Últimos 7 dias</option>
+    </select>
+    <select id="selConsultor" onchange="applyFilters()">
+      <option value="all">Todos consultores</option>
+    </select>
+    <select id="selProduto" onchange="applyFilters()">
+      <option value="all">Todos produtos</option>
+    </select>
+    <select id="selCidade" onchange="applyFilters()">
+      <option value="all">Todas cidades</option>
+    </select>
+  </div>
+</header>
+
+<div class="status-bar">
+  <span><span class="sdot sdot-green"></span>Verde = validado</span>
+  <span><span class="sdot sdot-yellow"></span>Amarelo = pendência</span>
+  <span><span class="sdot sdot-gray"></span>Branco = aguardando</span>
+  <span id="statusInfo" style="margin-left:auto;white-space:nowrap"></span>
+</div>
+
+<main>
+  <div class="kpi-grid section" id="kpiGrid"></div>
+
+  <div class="section-label">Performance &amp; Campanha</div>
+  <div class="grid-2 section">
+    <div class="card">
+      <div class="card-title">Metas por consultor — mês completo</div>
+      <div id="metaRow"></div>
+      <div class="marks-legend">
+        <span><div class="mline" style="background:var(--yellow)"></div>Meta base R$ 50k</span>
+        <span><div class="mline" style="background:var(--green)"></div>Meta ideal R$ 100k</span>
+      </div>
+    </div>
+    <div id="campanhaWrap"></div>
+  </div>
+
+  <div class="section-label">Evolução &amp; Volume</div>
+  <div class="grid-2 section">
+    <div class="card">
+      <div class="card-title">Vendas por dia (R$)</div>
+      <div class="chart-wrap chart-md" style="height:200px">
+        <canvas id="chartDia" role="img" aria-label="Vendas por dia"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Volume por consultor</div>
+      <div class="chart-wrap chart-md" style="height:200px">
+        <canvas id="chartConsultor" role="img" aria-label="Volume por consultor"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Produto &amp; Cidade</div>
+  <div class="grid-2 section">
+    <div class="card">
+      <div class="card-title">Distribuição por produto</div>
+      <div class="chart-wrap chart-sm" style="height:180px">
+        <canvas id="chartProduto" role="img" aria-label="Distribuição por produto"></canvas>
+      </div>
+      <div class="legend" id="legendProduto"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Distribuição por cidade</div>
+      <div class="chart-wrap chart-sm" style="height:180px">
+        <canvas id="chartCidade" role="img" aria-label="Distribuição por cidade"></canvas>
+      </div>
+      <div class="legend" id="legendCidade"></div>
+    </div>
+  </div>
+
+  <div class="section-label">Registro de vendas</div>
+  <div class="card section">
+    <div class="card-title">
+      Todas as vendas no período
+      <span id="tableCount" style="color:var(--accent);font-weight:800;margin-left:6px"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th><th>Consultor</th><th>Aluno</th><th>Produto</th>
+            <th>Cidade</th><th>Pagamento</th><th>Valor final</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script>
+const MESES = {"2026-07": [{"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-01", "nome": "CLEITON EDSON DOS SANTOS", "cpf": "05923548909", "cidade_aluno": "Chapecó", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 5112.0, "desconto": 0.1, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Parceiro", "origem": "PARCEIRO BANDEIRA INDICOU E SUPORTE/FINANCEIRO FECHOU A VENDA", "detalhes": "Indicação Bandeira, aluno chorou por desconto, liberado 10%"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-01", "nome": "Elvis Ezequiel Aquino de Almeida", "cpf": "03837109607", "cidade_aluno": "Lagoa da Prata ", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1820.0, "valor_final": 1820.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Pagamento feito referente a Pós Graduação na mesma condição na Imersão 2.0, no valor de R$ 1.820,00 "}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-01", "nome": "Marcos Willian Rodrigues", "cpf": "6922315952.0", "cidade_aluno": "Sul Brasil/SC ", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5980.0, "valor_final": 5980.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso hibrido no valor de R$ 5.980,00 em 12x SEM juros ( carta na manga)  "}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-02", "nome": "Bruno Silva dos Santos", "cpf": "481.762.408-69", "cidade_aluno": "Não informada", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 6680.0, "valor_final": 5344.0, "desconto": 0.2, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso pós + presencial 5344 - 12 x de 534,40 cartão = turma Baixada Santista (autorizado Marcelo Adriano, aluno com dificuldade financeira) "}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-02", "nome": "Selma Rodrigues Ribeiro", "cpf": "30657553867.0", "cidade_aluno": "Registro  SP", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5980.0, "valor_final": 5980.0, "desconto": "SEM DESCONTO", "plataforma": "PRINCIPIA PAY", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente realizou o pagamento da Principia em 12x no boleto "}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-02", "nome": "Alexandre Quasne", "cpf": "04349913920", "cidade_aluno": "Itajaí-SC", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1880.0, "valor_final": 1880.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "LEAD DO LANÇAMENTO", "detalhes": "Aluno da imersão. Foi concedida, mediante autorização do Marcelo Miranda, a condição especial de R$ 1.880 com parcelamento em até 12x no cartão de crédito pela Hotmart.\n"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-02", "nome": "EDILSON VENANCIO DE JESUS", "cpf": "42983197840.0", "cidade_aluno": "Pariquera-Açu  SP", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5980.0, "valor_final": 5980.0, "desconto": "SEM DESCONTO", "plataforma": "PRINCIPIA PAY", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Venda feita pela principia no valor de R$ 5980 parcelado em 12x no boleto "}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-03", "nome": "Gustavo Perin", "cpf": "38866928844.0", "cidade_aluno": "Não informado", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 6680.0, "valor_final": 6680.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente comprou pelo preço cheio na hotmart"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-06", "nome": "Everton Francisco Bolsonello", "cpf": "04902731908", "cidade_aluno": "Xanxerê - SC - ", "pagamento": "BOLETO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6980.0, "valor_final": 5933.0, "desconto": 0.15, "plataforma": "PRINCIPIA PAY", "parcelas": "6 PARCELAS", "consultor": "Paulo Enrique", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Atendimento rápido, venda certa"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-07", "nome": "Juliano Knakiewicz", "cpf": "04134151988", "cidade_aluno": "Não informada ", "pagamento": "BOLETO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6980.0, "valor_final": 5933.0, "desconto": 0.15, "plataforma": "PRINCIPIA PAY", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso pós + presencial = turma de Chapecó\nValor do curso 5933 um entrada + 12 x pela principia (Com 15% de desconto conforme campanha do mês)"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-10", "nome": "Jeferson Demarco", "cpf": "067.061.019-40", "cidade_aluno": "Não informada", "pagamento": "À VISTA (PIX)", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6680.0, "valor_final": 5344.0, "desconto": 0.2, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso pós + presencial = 5344 20% desc via pix (carta na manga) comprovante em anexo"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-11", "nome": "Richard Victor Cruz", "cpf": "06669091990", "cidade_aluno": "Não informada ", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6680.0, "valor_final": 5678.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso pós + presencial - turma de Chapecó\nValor do curso = 5678 em 12 x de 567,780 no cartão ( desconto de 15% campanha do mês)"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-13", "nome": "José Ricardo da Conceição", "cpf": "008.547.537-88 ", "cidade_aluno": "Não informada", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "PETRÓPOLIS", "valor_base": 3700.0, "valor_final": 3500.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso presencial = 3500 via pix (Já é nosso aluno da pós) turma RJ"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-13", "nome": "Carlos Victor de Mello Fernandes", "cpf": "13652475704.0", "cidade_aluno": "Não informada", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 4544.0, "desconto": 0.2, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso tradicional - 4544,00 via pix (Autorizado pelo Marcelo Miranda) Esse aluno já indicou 6 colegas dele para fazer o curso conosco e os mesmos já fizeram."}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-13", "nome": "Marcelo Midaglia Resende", "cpf": "não informado", "cidade_aluno": "Não informado", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5680.0, "valor_final": 4500.0, "desconto": 0.2, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Venda realizada utilizando a 1ª carta na manga do mês de julho"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-14", "nome": "Bárbara Gaio Nunes", "cpf": "11838954961.0", "cidade_aluno": "Não informada", "pagamento": "À VISTA (PIX)", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6680.0, "valor_final": 5450.0, "desconto": 0.2, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Pós + presencial = Chapecó 5450 via pix ( Autorizado Juliana)"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-14", "nome": "Fernando do Nascimento Fernandes", "cpf": "26137806812.0", "cidade_aluno": "Barueri-SP", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 4160.0, "valor_final": 4160.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "7 PARCELAS", "consultor": "Paulo Enrique", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Demorooooooooooooou mas fechei a venda😎 "}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-15", "nome": "Glaydson Alves de Souza", "cpf": "02639374109", "cidade_aluno": "Não informado", "pagamento": "CARTÃO", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1980.0, "valor_final": 1980.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente comprou o online e vai tentar fazer o presencial em GO"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-15", "nome": "Veronica T Toaldo", "cpf": "75418304968.0", "cidade_aluno": "Joaçaba -SC", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "valor_base": 5980.0, "valor_final": 4500.0, "desconto": 0.2, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente realizou uma contraproposta no valor de R$ 4.500,00 para o curso hibrido. Negociação autorizada pelo Rondinelio "}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-16", "nome": "Leandro Camargo Martins", "cpf": "023 003 199 42", "cidade_aluno": "Não informada ", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6680.0, "valor_final": 5678.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso pós graduação + presencial = 5678 em 12 x no cartão de 567,80"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-16", "nome": "Antonio Sérgio Ferreira Muniz", "cpf": "766.238.156-00", "cidade_aluno": "Não informada", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 4828.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso Tradicional - 4828 em 12 x cartão de 482,80 cada parcela ( venda com 15% de desconto, campanha do mês)\nTurma de Chapecó"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-16", "nome": "Ricardo de Deus Rodrigues", "cpf": "24635061809.0", "cidade_aluno": "Não informada", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2329.0, "valor_final": 1980.0, "desconto": 0.15, "plataforma": "PRINCIPIA PAY", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curdo tradicional 100% online = valor promocional pela principia 1980,00 "}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-16", "nome": "Ricardo Martinho Carli", "cpf": "22559160889.0", "cidade_aluno": "SP", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 4200.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "2 PARCELAS", "consultor": "Larissa", "origem": "JÁ É ALUNO", "detalhes": "Cliente já era aluno do TSA e tinha o valor pago nesse curso como cashback em cima do valor promocional desse mês, por isso ficou esse valor. A Juliana autorizou um pix hoje e outro até dia 20 de agosto para participar da turma em Maririporã"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-16", "nome": "Germano Manoel Torreira Lema", "cpf": "69627444715.0", "cidade_aluno": "Petrópolis - RJ", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5980.0, "valor_final": 4828.0, "desconto": 0.15, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Oferta dos 15% de desconto, formação hibrido R$ 4828 a vista em deposito bancário "}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-20", "nome": "Karlla Camilo Alves", "cpf": "012.224.861-99", "cidade_aluno": "Não informada", "pagamento": "À VISTA (PIX)", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "GOIÂNIA - GO", "valor_base": 6680.0, "valor_final": 5974.0, "desconto": 0.1, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "7 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso pós graduação = valor de 5974 turma = Goiânia\nForma de pagamento (Autorizado pela Juliana)\n1.000,00 a vista - via pix \n829,00 30/07 - via pix \n829,00 15/08- via pix \n829,00 30/08- via pix \n829,00 15/09- via pix \n829,00 30/09- via pix \n829,00 08/10- via pix \nValor total do curso 5974\nCom contrato para ela assinar que se o curso não tiver pago todo ele, impossibilita a aluna de realizar as aulas presenciais"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-20", "nome": "FLÁVIO HENRIQUE CANÇADO LIMA", "cpf": "849.228.426-91", "cidade_aluno": "Goiânia", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "GOIÂNIA - GO", "valor_base": 5680.0, "valor_final": 4828.0, "desconto": 0.15, "plataforma": "ASAAS", "parcelas": "3 PARCELAS", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente fez R$3828 em 3x no cartão e vai fazer um pix de R$1000 no dia 24/07 - contrato assinado"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-20", "nome": "Luciano Francisco Pardini", "cpf": "756.089.109-82", "cidade_aluno": "Mairipora ", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 4042.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "HOTMART", "parcelas": "10 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Pagamento em 10x no cartão de credito pela hotmart "}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-21", "nome": "Guilherme Roque Razori", "cpf": "36825355864.0", "cidade_aluno": "Não informado", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 6680.0, "valor_final": 5678.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente comprou dia 20 pela hotmart - contrato assinado"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-22", "nome": "Rosilene do Carmo Pereira Maciel", "cpf": "12598167708.0", "cidade_aluno": "Petrópolis ", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5980.0, "valor_final": 4828.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Pagamento com 15% de desconto pela hotmart curso hibrido em 12 x de R$ 484,74"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-24", "nome": "Carlos Arlan Ramos", "cpf": "02672608903", "cidade_aluno": "Não informada", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 4828.0, "desconto": 0.15, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Venda realizada no valor da promoção do mês"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-28", "nome": "Felipe Jardel Dos Reis Araújo", "cpf": "076.112.546-93", "cidade_aluno": "BH", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 3700.0, "valor_final": 2700.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "JÁ É ALUNO", "detalhes": "Cliente tinha mil reais de desconto devido a black. Deu R$500 de entrada via pix e vai pagar o restante no cartão dia 15/08 (informei a ele que o link seria enviado perto da data e avisei a Alicia - contrato assinado)"}, {"bg": "FFB6D7A8", "status": "validado", "cancelado": false, "data_venda": "2026-07-30", "nome": "Michael Alves Cerqueira", "cpf": "40960386874.0", "cidade_aluno": "Itanhaém SP", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5980.0, "valor_final": 4828.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "LEAD DO LANÇAMENTO", "detalhes": "Pagamento feito no cartão de credito pela plataforma da hotmart "}, {"bg": "FFF8F9FA", "status": "nao_conferido", "cancelado": false, "data_venda": "2026-07-30", "nome": "Felipe Correia Gonçalves", "cpf": "44149316813.0", "cidade_aluno": " São Paulo", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 6980.0, "valor_final": 5678.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Pagamento feito no valor de R$ 5.678,00 Pós + Hibrido  feito no cartao de credito pela hotmart "}], "2026-06": [{"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-01", "nome": "Francisco das Chagas da Silva", "cpf": "29659617801.0", "cidade_aluno": "Não informada ", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "SÃO PAULO - CLUBE BULLDOG", "valor_base": 5680.0, "valor_final": 5680.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Dentro do esperado"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-02", "nome": "Fillipe Marthos Ferreira", "cpf": "40968959890.0", "cidade_aluno": "não informado", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 3700.0, "valor_final": 3700.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "JÁ É ALUNO", "detalhes": "Cliente comprou em 12x de 370,00"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-02", "nome": "Hort Kosloski", "cpf": "04228644120", "cidade_aluno": "Campo Grande MS ", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5680.0, "valor_final": 5680.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Pagamento em 12x no cartoa de credito pela Hotmart "}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-02", "nome": "Trajano Pedro Irion Boschetti", "cpf": "042129600 36", "cidade_aluno": "Porto Lucena/RS", "pagamento": "À VISTA (PIX)", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CHAPECÓ - SC", "valor_base": "2980.00", "valor_final": 2980.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Paulo Enrique", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Fiquei 2 semanas conversando com ele e consegui fechar."}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-02", "nome": "Trajano Pedro Irion Boschetti", "cpf": "04212960036", "cidade_aluno": "Porto Lucena/RS", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "CHAPECÓ - SC", "valor_base": 3700.0, "valor_final": 3700.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Paulo Enrique", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Demorou duas semanas mas consegui"}, {"bg": "FFFFFF00", "status": "pendencia", "cancelado": true, "data_venda": "2026-06-05", "nome": "PAULO CÉSAR DE BELÉM NAVARRO", "cpf": "45410984234.0", "cidade_aluno": "Não informado", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1980.0, "valor_final": 1980.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente comprou curso online pela hotmart"}, {"bg": "FFFFFF00", "status": "pendencia", "cancelado": true, "data_venda": "2026-06-05", "nome": "Anderson Ricardo Santos", "cpf": "875.670.599-91", "cidade_aluno": "Não informado", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "CURITIBA", "valor_base": 3700.0, "valor_final": 3145.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "JÁ É ALUNO", "detalhes": "Marcelo autorizou a venda com desconto, cliente há um bom tempo em negociação"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-06", "nome": "Milton Luís Olegário Silva", "cpf": "44359608004.0", "cidade_aluno": "São Francisco do Sul", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CURITIBA", "valor_base": 5980.0, "valor_final": 4828.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Pagamento a vista no valor de R$ 4828,00 ( cobri a oferta do concorrente) "}, {"bg": "FFFFFF00", "status": "pendencia", "cancelado": true, "data_venda": "2026-06-04", "nome": "Ralf Berger", "cpf": "00706653971", "cidade_aluno": "Curitiba", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURITIBA", "valor_base": 6680.0, "valor_final": 6680.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Dentro da modalidae"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-10", "nome": "GUSTAVO HERON DOS SANTOS", "cpf": "36527328800.0", "cidade_aluno": "Aparecida SP ", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 6680.0, "valor_final": 6680.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Paulo Enrique", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Fui objetivo e claro com o cliente, respostas rápidas graças ao novo CRM"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-10", "nome": "CARLOS DOMINGUES MUNIZ", "cpf": "33860421808.0", "cidade_aluno": "Não informada", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 2831.0, "desconto": 0.05, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Aluno policial, Marcelo concedeu 5% de desconto para a pós e fazer sem juros para ele e a esposa Ana."}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-10", "nome": "ANA STELA DOS SANTOS FIDENCIO MUNIZ", "cpf": "40377561886.0", "cidade_aluno": "Não informada", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 2831.0, "desconto": 0.05, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Esposado aluno da PM, Marcelo Adriano deu o desconto de 5% no cartão sem juros"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-11", "nome": "Fernando Henrique de Brito Montagner", "cpf": "04105547151", "cidade_aluno": "não informado", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5680.0, "valor_final": 5680.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente em negociação há um bom tempo"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-11", "nome": "Pedro Henrique brito obara", "cpf": "04616161143", "cidade_aluno": "Campo Grande", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5980.0, "valor_final": 4500.0, "desconto": 0.2, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "INDICAÇÃO (PARCEIROS)", "detalhes": "Negociação feita diretamente com o Marcelo Adriano, valo feito em R$ 4.500,00 parcelado em 12x no cartão de credito "}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-12", "nome": "Rodrigo Celestino Freire", "cpf": "12769299786.0", "cidade_aluno": "Não informada", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 5680.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Dentro do esperado"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-15", "nome": "Rafael Pereira de Souza Gomes", "cpf": "05895563988", "cidade_aluno": "Não informada", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 5390.0, "desconto": 0.05, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Aluno solicitou desconto á vista para o Marcelo, o mesmo concedeu 5% de desconto para ele. Pagamento foi feito em nome da esposa dele Andressa aparecida dos Santos de Brito comprovante em anexo e confirmado o recebimento com a Alícia."}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-17", "nome": "Ruan Medici de Oliveira", "cpf": "08037765601", "cidade_aluno": "não informado", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 5000.0, "desconto": 0.1, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Larissa", "origem": "INDICAÇÃO (PARCEIROS)", "detalhes": "Desconto concedido pelo Marcelo e Juliana"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-17", "nome": "Edvaldo Marcelino Uchoa Benatti", "cpf": "2350741877.0", "cidade_aluno": "Não informada", "pagamento": "BOLETO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 29820.0, "valor_final": 1788.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "PRINCIPIA PAY", "parcelas": "3 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Pós 100%online 2980 = valor final 1788 em 3x no boleto sem juros \n(Marcelo Adriiano concedeu 40% de desconto Dono do clube da Baixada Santista)"}, {"bg": "FFFFFF00", "status": "pendencia", "cancelado": true, "data_venda": "2026-06-19", "nome": "SILVIA PATRICIA ALFAIA DA SILVA", "cpf": "646.817.422-87", "cidade_aluno": "Cascavel", "pagamento": "BOLETO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 6980.0, "valor_final": 6980.0, "desconto": "SEM DESCONTO", "plataforma": "PRINCIPIA PAY", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "Indicação de aluno", "detalhes": "Cliente em negociação via ligação, comprou no boleto"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-23", "nome": "Samuel Gomes de Souza", "cpf": "não informado", "cidade_aluno": "RJ", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "PETRÓPOLIS", "valor_base": 5980.0, "valor_final": 3680.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Larissa", "origem": "LEAD DO LANÇAMENTO", "detalhes": "ATENÇÃO, CONSIDERAR VENDA CHEIA PORQUE QUEM PASSOU ESSE VALOR DE 3680 FOI O PESSOAL DE CAMPO GRANDE, ENTÃO FOI AUTORIZADO VENDER PRA ELE POR ESSE VALOR"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-23", "nome": "Felipe Heleno Sanches de Lima", "cpf": "98205250715.0", "cidade_aluno": "Rio de Janeiro", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 6680.0, "valor_final": 5678.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso hibrido + complementação da Pós no valor  R$ 5.678,00 em 12 x de R$ 570,09 "}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-23", "nome": "Samuel Rodrigues Paulo de Carvalho", "cpf": "06623525130", "cidade_aluno": "Campo Grande", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5980.0, "valor_final": 5980.0, "desconto": "SEM DESCONTO", "plataforma": "PRINCIPIA PAY", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente realizou a compra pela principia em 12x no boleto "}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-24", "nome": "João Pedro Andrade Modesti", "cpf": "04450284089", "cidade_aluno": "Caxias do Sul-RS", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "valor_base": 5680.0, "valor_final": 5112.0, "desconto": 0.1, "plataforma": "HOTMART", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Paulo Enrique", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Conversei, expliquei e fechei!"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-24", "nome": "Jonathan Patrizio Joseph Melo", "cpf": "105.749.986-24", "cidade_aluno": "Curitiba", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CURITIBA", "valor_base": 6680.0, "valor_final": 6680.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Negociação desde a clint"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-24", "nome": "Elísio Victor da Silva", "cpf": "01116154102", "cidade_aluno": "Duque de Caxias", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "PETRÓPOLIS", "valor_base": 4160.0, "valor_final": 4160.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "LEAD DO LANÇAMENTO", "detalhes": "Aluno da imersão, comprou a complementação presencial "}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-25", "nome": "Nathasha Benites da Silva", "cpf": "07413164124", "cidade_aluno": "Campo Grande/MS", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5980.0, "valor_final": 5980.0, "desconto": "SEM DESCONTO", "plataforma": "PRINCIPIA PAY", "parcelas": "12 PARCELAS", "consultor": "Paulo Enrique", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Foi dificil para nossa cliente conseguir fechar o financiamento, mas teve sucesso"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-29", "nome": "Luiz Eduardo Pichurski Guerios", "cpf": "096.659.859-81", "cidade_aluno": "Não informada", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 4828.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "10 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso tradicional - turma de Chapecó\nValor final 4828 em 10 x no cartão de 482,20 (Marcelo Adriano autorizou, aluno vai indicar mais dois PM para fazer o curso)"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-30", "nome": "Lucas Nadir Sobierai", "cpf": "não informado", "cidade_aluno": "não informado", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6680.0, "valor_final": 6012.0, "desconto": 0.1, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente comprou pela hotmart"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-30", "nome": "Fernanda Gabriela da Silva", "cpf": "11168135990.0", "cidade_aluno": "Cascavel", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 5680.0, "desconto": "SEM DESCONTO", "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso tradicional = Turma Cascavel outubro\nForma de pagamento - 5680 (vai pagar 200,00 semanal e cada dia 20 de cada mês valor de 500,00  quando atingir o valor total de 5680 liberar o presencial. Autorizado por Marcelo Adriano e Miranda estou aguardando o contrato para a aluna assinar. (Marcelo Adriano pediu para liberar de imediato a parte online)."}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-30", "nome": "Klaiton Adair dos Santos", "cpf": "068.747.459-05", "cidade_aluno": "Chapecó", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 4828.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso tradicional = turma |Chapecó valor do curso 4828  em 12 x no cartão de 482,80"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-06-30", "nome": "ROGER ALMEIDA DA SILVA", "cpf": "954.446.027-68", "cidade_aluno": "Não informada", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 4544.0, "desconto": 0.2, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso tradicional 4544 via pix  turma Rio de Janeiro (Autorizado por Marcelo Adriano o desconto de 20%)"}], "2026-05": [{"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-01", "nome": "VINÍCIUS BRAGA DIAS", "cpf": "09501205614", "cidade_aluno": "Santa Luzia MG", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "PETRÓPOLIS", "valor_base": 3700.0, "valor_final": 2700.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "ASAAS", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "JÁ É ALUNO", "detalhes": "CDesconto do aluno, pagoi R$ 2.700,00 em 12x pelo assas "}, {"bg": "FFFFD966", "status": "pendencia", "cancelado": true, "data_venda": "2026-05-06", "nome": "Mirna de Souza Gama", "cpf": " 146.833.758-00", "cidade_aluno": "Não informada", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 1900.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "ASAAS", "parcelas": "10 PARCELAS", "consultor": "Caren", "origem": "JÁ É ALUNO", "detalhes": "Aluna fez o curso híbrido conosco e agora fez a pós online a pedido do  Marcelo Adriano autorizou o valor de 1900 no cartão em 10 x sem juros"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-08", "nome": "Sandro Pereira da Silva", "cpf": "02004580941", "cidade_aluno": "não informado", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 5680.0, "desconto": "SEM DESCONTO", "plataforma": "ASAAS", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente em negociação desde o começo do ano"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-08", "nome": "Paola Debossan Vellozo", "cpf": "15720119710.0", "cidade_aluno": "Nova Friburgo", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 5112.0, "desconto": 0.1, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Venda realizada de forma parcelada no cartão de crédito em 12x, no valor de R$ 5.112,00.\n\nSolicito, por gentileza, a inclusão do curso bônus Segurança e Proteção Individual e Familiar (100% Online) para o cliente."}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-08", "nome": "LUCIANO AUGUSTO VOICIK", "cpf": "03681199124", "cidade_aluno": "não informado", "pagamento": "CARTÃO", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1980.0, "valor_final": 1980.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente comprou o online em 12x de 198,00 pela hotmart"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-14", "nome": "Mauricio Jordan", "cpf": "66618088704.0", "cidade_aluno": "Saquarema/RJ", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 4827.99, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Paulo Enrique", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente demorava um pouco em responder, mas foi objetivo."}, {"bg": "FFFFD966", "status": "pendencia", "cancelado": true, "data_venda": "2026-05-14", "nome": "Fernando Rosolen", "cpf": "221.391.618-74", "cidade_aluno": "não informado", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 3700.0, "valor_final": 3145.0, "desconto": 0.15, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Larissa", "origem": "JÁ É ALUNO", "detalhes": "Cliente pagou no pix com 15% de desconto e o marcelo adriano autorizou liberar os seguintes bônus pra ele: Acesso ao TSA - Acesso ao Recarga de Munições e 02 anos de acesso ao curso online (ele já tem acesso tradicional)"}, {"bg": "FFF6B26B", "status": "pendencia", "cancelado": true, "data_venda": "2026-05-14", "nome": "GERALDO JOSE RIBEIRO PAES", "cpf": "02154451713", "cidade_aluno": "Não Informada", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 1820.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Aluno comprou dentro da Imersão, mas estava em negociação comigo, e ele ainda não recebeu o acesso do curso."}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-15", "nome": "Gabriel De Oliveira Nantes", "cpf": "04903454177", "cidade_aluno": "não informado", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5680.0, "valor_final": 5680.0, "desconto": "SEM DESCONTO", "plataforma": "ASAAS", "parcelas": "3 PARCELAS", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente vai aguardar a próxima turma em Campo Grande"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-18", "nome": "Danillo Santos Araújo", "cpf": "02151909557", "cidade_aluno": "Alagoinhas, Bahia.", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 2980.0, "valor_final": 1820.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "HOTMART", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Paulo Enrique", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente objetivo, claro e financeiramente estável"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-18", "nome": "Danillo Santos Araújo", "cpf": "02151909557", "cidade_aluno": "Alagoinhas, Bahia.", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 3500.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "HOTMART", "parcelas": "8 PARCELAS", "consultor": "Paulo Enrique", "origem": "LEAD DO LANÇAMENTO", "detalhes": "Cliente objetivo"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-18", "nome": "Júlio Abreu de Souza Neto", "cpf": "08587638777", "cidade_aluno": "Não informada", "pagamento": "À VISTA (PIX)", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "PETRÓPOLIS", "valor_base": 6680.0, "valor_final": 5500.0, "desconto": 0.15, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Aluno pagou via pix o comprovante em anexo está em nome da esposa Evandra Conceição de Abreu. (Marcelo Adriano autorizou)"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-19", "nome": "JOSÉ MILTON MATOS CAVALCANTE", "cpf": " 862.180. 425-53", "cidade_aluno": "Não informada", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 3860.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "ASAAS", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "JÁ É ALUNO", "detalhes": "Aluno comprou a pós na imersão, o valor pago pelo presencial foi por conta do desconto da imersão."}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-19", "nome": "John Leno da Silva", "cpf": "229.708.648-27", "cidade_aluno": "São Paulo", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "SÃO PAULO - CLUBE BULLDOG", "valor_base": 2980.0, "valor_final": 1819.99, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "HOTMART", "parcelas": "11 PARCELAS", "consultor": "Paulo Enrique", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Ótimo cliente, falta fechar o presencial"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-19", "nome": "Graziela de Sousa", "cpf": "280.107.228-12", "cidade_aluno": "Não informado", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 3860.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "ASAAS", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "LEAD DO LANÇAMENTO", "detalhes": "Cliente comprou a pós na imersão e por isso ganhou R$1820 de desconto (cashback) - considerar venda cheia"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-19", "nome": "Alessandro José Torres Rodrigues", "cpf": "055.328.007-40", "cidade_aluno": "não informado", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 4300.0, "desconto": 0.25, "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente em negociação desde março, no mês em questão estávamos com 20% de desconto no curso e havia feito esse valor promocional para pagamento à vista, para não perder o cliente mantive para ele pagar hoje."}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-20", "nome": "Weberson Gomes Nogueira", "cpf": "12084134730.0", "cidade_aluno": "Río das ostras", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 4828.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Aluno não conseguiu me andar o comprovante do pagamento. Venda do curso hibrido no valor de R$ 4.828,00  parcelado em 12 x de R$ 484,74"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-20", "nome": "Cesar Augusto Braganholo", "cpf": "028.163.839-03", "cidade_aluno": "Não informada ", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 5680.0, "desconto": "SEM DESCONTO", "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Aluno pagou 4000 via pix + 01  pix dia 22/05 no valor de 1680 aluno fará o presencial na turma de Cascavel em julho"}, {"bg": "FFFFFF00", "status": "pendencia", "cancelado": true, "data_venda": "2026-05-22", "nome": "Gabriel Almeida Cornelius", "cpf": "69214433100.0", "cidade_aluno": "Goiânia /GO", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "GOIÂNIA - GO", "valor_base": 6680.0, "valor_final": 5344.0, "desconto": 0.2, "plataforma": "HOTMART", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Compra feita no cartão de crédito a vista no valor  R$ 5344"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-25", "nome": "Jhonatan Douglas Gonçalves do Prado", "cpf": "110.270.189-04", "cidade_aluno": "Não informada", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURITIBA", "valor_base": 6680.0, "valor_final": 5800.0, "desconto": 0.1, "plataforma": "ASAAS", "parcelas": "10 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Negociação feita antes da informação no grupo para não dar desconto e usei meu suer poder para fechar a venda"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-25", "nome": "Henrique Redigolo Costa", "cpf": "164.260.957-96", "cidade_aluno": "não informado", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 6680.0, "valor_final": 6012.0, "desconto": 0.1, "plataforma": "HOTMART", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Comprou pela hotmart"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-25", "nome": "MARIA ROSA SWIRKOVSKI", "cpf": "10296989967.0", "cidade_aluno": "não informado", "pagamento": "CARTÃO", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1980.0, "valor_final": 1980.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "12x de 198,00 na hotmart"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-25", "nome": "Diogo Dias Parente", "cpf": "31988988896.0", "cidade_aluno": "não informado", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE BULLDOG", "valor_base": 3700.0, "valor_final": 2700.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Larissa", "origem": "JÁ É ALUNO", "detalhes": "Marcelo autorizou vender por 2700"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-25", "nome": "VANDERSON ALEXANDRE TOEPPER", "cpf": "10791591930.0", "cidade_aluno": "Cascavel", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 5112.0, "desconto": 0.1, "plataforma": "HOTMART", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Larissa", "origem": "indicação de aluno", "detalhes": "Comprou em 1x no crédito"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-26", "nome": "Rodolfo thomé torres eiras da cruz", "cpf": "13913401750.0", "cidade_aluno": "Petrópolis  ", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 5112.0, "desconto": 0.1, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Venda do curso hibrido no valor de R$ 5.112,00 parcelado em 12x no cartão de credito pela hotmart "}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-26", "nome": "João Batista Piloneto", "cpf": "588.899.499-53", "cidade_aluno": "Cascavel", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 4828.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "O desconto dado para o aluno foi autorizado por Marcelo Adriano, o mesmo estava em contato com o aluno que solicitou o desconto."}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-27", "nome": "Luís Carlos dresch", "cpf": "00594542022", "cidade_aluno": "São José das palmeiras", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5980.0, "valor_final": 5980.0, "desconto": "SEM DESCONTO", "plataforma": "PRINCIPIA PAY", "parcelas": "12 PARCELAS", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Cliente realizou o pagamento do curso hibrido pela principia "}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-28", "nome": "DIOMAR ABEL DOS SANTOS", "cpf": "26897173878.0", "cidade_aluno": "não informado", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 6680.0, "valor_final": 6680.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Larissa", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "12x de 668,00 pela hotmart"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-29", "nome": "Carlos Eduardo dos Santos", "cpf": "120.946.679-10", "cidade_aluno": "Não informada", "pagamento": "BOLETO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURITIBA", "valor_base": 6980.0, "valor_final": 6980.0, "desconto": "SEM DESCONTO", "plataforma": "PRINCIPIA PAY", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Aluno fez a compra na principia com  01 entrada de 802,70   + 12 x  697,30 dentro da plataforma, comprovante em anexo"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-29", "nome": "Carlos Alberto Faria Barcellos Junior", "cpf": "059.028.847-48", "cidade_aluno": "Não informada ", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "PETRÓPOLIS", "valor_base": 3700.0, "valor_final": 3700.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso presencial - Petrópolis\nValor 3700 = 12 x 370,00 no cartão comprou a pós na imersão \n"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-29", "nome": "SIMÃO SPAGNOLO LUCIAN", "cpf": "07013216950", "cidade_aluno": "Água Doce - SC", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "CURITIBA", "valor_base": 3860.0, "valor_final": 3600.0, "desconto": "DESCONTO PARA ALUNOS", "plataforma": "TRANSFERÊNCIA DIRETO NA CONTA", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Vitória", "origem": "LEAD DO LANÇAMENTO", "detalhes": "Valor autorizado pela Juliana, aluno da pós da imersão pagou R$ 3.600 por deposito "}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-29", "nome": "José Nunes Rios Filho", "cpf": "07042723503", "cidade_aluno": "Não informada", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "GOIÂNIA - GO", "valor_base": 5680.0, "valor_final": 5680.0, "desconto": "SEM DESCONTO", "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Dentro do esperado"}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-29", "nome": "Gabriel Tasca de Godoy", "cpf": "37161362806.0", "cidade_aluno": "São Bernardo do Campo", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 4828.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "1 PARCELA (À VISTA OU NO VENCIMENTO DO CARTÃO)", "consultor": "Vitória", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Curso hibrido  no valor de R$ 4.828,00 à vista ou 12x de R$ 484,74 "}, {"bg": "FF93C47D", "status": "validado", "cancelado": false, "data_venda": "2026-05-31", "nome": "Vimar Rodrigues da Siveira", "cpf": "02753831998", "cidade_aluno": "Não informada ", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "CASCAVEL", "valor_base": 3700.0, "valor_final": 3200.0, "desconto": 0.15, "plataforma": "HOTMART", "parcelas": "12 PARCELAS", "consultor": "Caren", "origem": "TRÁFEGO GERAL (CAPTURA)", "detalhes": "Já é aluno do Projeto IAT, negociação antiga por isso que está vendido por 3200 autorizado Marcelo Adriano, foi antes das mudanças que teve nas vendas."}]};
+
+const COR = {
+  'Vitória':'#4f8ef7','Caren':'#34d399','Larissa':'#fbbf24',
+  'Paulo Enrique':'#a78bfa','Parceiro':'#94a3b8'
+};
+const PALETTE = ['#4f8ef7','#34d399','#fbbf24','#a78bfa','#94a3b8','#f87171','#fb923c'];
+const META_BASE=50000, META_IDEAL=100000, CAMP_META=25, CAMP_BONUS=2500;
+const CAMP_CIDADE='BAIXADA SANTISTA - SP';
+const CAMP_MES='2026-07'; // campanha só em julho
+
+let CHARTS={};
+
+function today(){ return new Date().toISOString().slice(0,10); }
+function shiftDate(d,days){ const dt=new Date(d); dt.setDate(dt.getDate()+days); return dt.toISOString().slice(0,10); }
+function fmt(v){ return 'R$ '+Math.round(v).toLocaleString('pt-BR'); }
+function prodLabel(s){
+  return (s||'')
+    .replace('PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO','Pós-Graduação')
+    .replace('FORMAÇÃO IAT (HÍBRIDO)','Formação Híbrido')
+    .replace('PÓS + PRESENCIAL (HÍBRIDO)','Pós + Presencial')
+    .replace('APENAS COMPLEMENTAÇÃO PRESENCIAL','Comp. Presencial')
+    .replace('DOCÊNCIA EM ARMAMENTO E TIRO','Docência Online');
+}
+
+function filterPeriod(rows,period){
+  const t=today();
+  if(period==='all')       return rows;
+  if(period==='today')     return rows.filter(r=>r.data_venda===t);
+  if(period==='yesterday') return rows.filter(r=>r.data_venda===shiftDate(t,-1));
+  if(period==='3d')        return rows.filter(r=>r.data_venda>=shiftDate(t,-2));
+  if(period==='7d')        return rows.filter(r=>r.data_venda>=shiftDate(t,-6));
+  return rows;
+}
+
+function onMesChange(){
+  // reconstruir selects de consultor/produto/cidade para o novo mês
+  const mes=document.getElementById('selMes').value;
+  const rows=MESES[mes]||[];
+  const uniq=(fn)=>[...new Set(rows.map(fn).filter(Boolean))].sort();
+
+  ['selConsultor','selProduto','selCidade'].forEach(id=>{
+    const sel=document.getElementById(id);
+    const first=sel.options[0];
+    sel.innerHTML=''; sel.appendChild(first);
+  });
+  uniq(r=>r.consultor).forEach(c=>{
+    const o=document.createElement('option'); o.value=c; o.textContent=c;
+    document.getElementById('selConsultor').appendChild(o);
+  });
+  uniq(r=>r.curso).forEach(c=>{
+    const o=document.createElement('option'); o.value=c; o.textContent=prodLabel(c);
+    document.getElementById('selProduto').appendChild(o);
+  });
+  uniq(r=>r.cidade_curso).forEach(c=>{
+    const o=document.createElement('option'); o.value=c; o.textContent=c;
+    document.getElementById('selCidade').appendChild(o);
+  });
+  applyFilters();
+}
+
+function applyFilters(){
+  const mes=document.getElementById('selMes').value;
+  const period=document.getElementById('selPeriodo').value;
+  const consultor=document.getElementById('selConsultor').value;
+  const produto=document.getElementById('selProduto').value;
+  const cidade=document.getElementById('selCidade').value;
+
+  let rows=MESES[mes]||[];
+  rows=filterPeriod(rows,period);
+  if(consultor!=='all') rows=rows.filter(r=>r.consultor===consultor);
+  if(produto!=='all')   rows=rows.filter(r=>r.curso===produto);
+  if(cidade!=='all')    rows=rows.filter(r=>r.cidade_curso===cidade);
+
+  renderAll(rows, mes);
+}
+
+function renderAll(rows,mes){
+  const allRows=MESES[mes]||[];
+  const allValid=allRows.filter(r=>!r.cancelado);
+  const valid=rows.filter(r=>!r.cancelado);
+
+  // status bar
+  const nVal=rows.filter(r=>r.status==='validado').length;
+  const nPend=rows.filter(r=>r.status==='pendencia').length;
+  const nAg=rows.filter(r=>r.status==='nao_conferido').length;
+  document.getElementById('statusInfo').textContent=
+    `${nVal} validados · ${nPend} pendências · ${nAg} aguardando · ${rows.length} total`;
+
+  // KPIs
+  const totalVal=valid.reduce((s,r)=>s+(r.valor_final||0),0);
+  const totalBase=valid.reduce((s,r)=>s+(r.valor_base||0),0);
+  const ticket=valid.length?totalVal/valid.length:0;
+  const desconto=totalBase-totalVal;
+  document.getElementById('kpiGrid').innerHTML=`
+    <div class="kpi" style="--kpi-color:var(--c1)">
+      <div class="kpi-label">Total vendido</div>
+      <div class="kpi-value">${fmt(totalVal)}</div>
+      <div class="kpi-sub">${valid.length} vendas</div>
+    </div>
+    <div class="kpi" style="--kpi-color:var(--c2)">
+      <div class="kpi-label">Ticket médio</div>
+      <div class="kpi-value">${fmt(ticket)}</div>
+      <div class="kpi-sub">sobre valor final</div>
+    </div>
+    <div class="kpi" style="--kpi-color:var(--c3)">
+      <div class="kpi-label">Desconto concedido</div>
+      <div class="kpi-value">${fmt(desconto)}</div>
+      <div class="kpi-sub">vs. tabela base</div>
+    </div>
+    <div class="kpi" style="--kpi-color:var(--c4)">
+      <div class="kpi-label">Consultores ativos</div>
+      <div class="kpi-value">${new Set(valid.map(r=>r.consultor)).size}</div>
+      <div class="kpi-sub">no período</div>
+    </div>`;
+
+  // METAS — mês todo
+  const consultores=[...new Set(allValid.map(r=>r.consultor))].sort();
+  document.getElementById('metaRow').innerHTML=consultores.map(c=>{
+    const tot=allValid.filter(r=>r.consultor===c).reduce((s,r)=>s+(r.valor_final||0),0);
+    const pct=Math.min(tot/META_IDEAL*100,100);
+    const cor=COR[c]||'#94a3b8';
+    let badge='';
+    if(tot>=META_IDEAL) badge='<span class="kpi-badge badge-green">IDEAL ✓</span>';
+    else if(tot>=META_BASE) badge='<span class="kpi-badge badge-yellow">BASE ✓</span>';
+    const falta=Math.max(0,META_BASE-tot);
+    return `<div class="meta-item">
+      <div class="meta-header">
+        <span class="meta-name" style="color:${cor}">${c}${badge}</span>
+        <span class="meta-val">${fmt(tot)}</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:${pct}%;background:${cor}"></div>
+        <div class="progress-mark mark-base" style="left:50%"></div>
+        <div class="progress-mark mark-ideal" style="left:calc(100% - 2px)"></div>
+      </div>
+      <div class="meta-footer">
+        <span>${Math.round(pct*2)}% da meta ideal</span>
+        ${falta>0?`<span>Faltam ${fmt(falta)} para meta base</span>`:'<span style="color:var(--green)">Meta base atingida!</span>'}
+      </div>
+    </div>`;
+  }).join('');
+
+  // CAMPANHA — só julho
+  const wrap=document.getElementById('campanhaWrap');
+  if(mes===CAMP_MES){
+    const bsRows=allValid.filter(r=>r.cidade_curso===CAMP_CIDADE);
+    const alunosBS=bsRows.length;
+    const pctCamp=Math.min(alunosBS/CAMP_META*100,100);
+    const faltamBS=Math.max(0,CAMP_META-alunosBS);
+    const totalBSVal=bsRows.reduce((s,r)=>s+(r.valor_final||0),0);
+    const byC={};
+    bsRows.forEach(r=>{byC[r.consultor]=(byC[r.consultor]||0)+(r.valor_final||0);});
+    const bonusHtml=Object.entries(byC).sort((a,b)=>b[1]-a[1]).map(([c,v])=>{
+      const bonus=totalBSVal>0?(v/totalBSVal)*CAMP_BONUS:0;
+      return `<div class="bonus-item">
+        <div class="bonus-name">${c}</div>
+        <div class="bonus-val">${fmt(bonus)}</div>
+        <div class="bonus-pct">${Math.round(v/totalBSVal*100)}% do vol.</div>
+      </div>`;
+    }).join('');
+    wrap.innerHTML=`<div class="campanha-card">
+      <div class="camp-label">🎯 Campanha Baixada Santista</div>
+      <div class="camp-sub">Meta: 25 alunos únicos · Prazo: até 28/ago/2026 · Bônus total: R$ 2.500</div>
+      <div class="camp-count">${alunosBS} <span>/ ${CAMP_META}</span></div>
+      <div class="camp-track"><div class="camp-fill" style="width:${pctCamp}%"></div></div>
+      <div class="camp-status">${faltamBS>0?`Faltam ${faltamBS} alunos para liberar o bônus`:'🎉 Meta atingida! Bônus liberado!'}</div>
+      <div class="bonus-grid">${bonusHtml||'<div style="color:var(--muted);font-size:12px">Sem vendas para Baixada Santista</div>'}</div>
+    </div>`;
+  } else {
+    wrap.innerHTML=`<div class="camp-disabled">
+      <div>
+        <div style="font-size:28px;margin-bottom:8px">🎯</div>
+        <div style="font-weight:600;color:var(--muted);margin-bottom:4px">Campanha Baixada Santista</div>
+        <div style="font-size:12px">Vigência: julho e agosto de 2026</div>
+      </div>
+    </div>`;
+  }
+
+  // CHART DIA
+  const diasMap={};
+  valid.forEach(r=>{diasMap[r.data_venda]=(diasMap[r.data_venda]||0)+(r.valor_final||0);});
+  const dias=Object.keys(diasMap).sort();
+  mkChart('chartDia','line',
+    dias.map(d=>d.slice(5).replace('-','/')),
+    [{label:'Vendas',data:dias.map(d=>diasMap[d]),borderColor:'#4f8ef7',backgroundColor:'rgba(79,142,247,.08)',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#4f8ef7'}],
+    {scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#6b7280',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#6b7280',font:{size:10},callback:v=>'R$'+Math.round(v/1000)+'k'}}}}
+  );
+
+  // CHART CONSULTOR
+  const cMap={};
+  valid.forEach(r=>{cMap[r.consultor]=(cMap[r.consultor]||0)+(r.valor_final||0);});
+  const cKeys=Object.keys(cMap).sort((a,b)=>cMap[b]-cMap[a]);
+  mkChart('chartConsultor','bar',cKeys,
+    [{data:cKeys.map(c=>cMap[c]),backgroundColor:cKeys.map(c=>COR[c]||'#94a3b8'),borderRadius:4,borderSkipped:'bottom'}],
+    {indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#6b7280',font:{size:10},callback:v=>'R$'+Math.round(v/1000)+'k'}},y:{grid:{display:false},ticks:{color:'#e8eaf0',font:{size:12,weight:'600'}}}}}
+  );
+
+  // DOUGHNUT PRODUTO
+  const pMap={};
+  valid.forEach(r=>{const k=prodLabel(r.curso);pMap[k]=(pMap[k]||0)+(r.valor_final||0);});
+  const pKeys=Object.keys(pMap).sort((a,b)=>pMap[b]-pMap[a]);
+  mkChart('chartProduto','doughnut',pKeys,
+    [{data:pKeys.map(k=>pMap[k]),backgroundColor:PALETTE.slice(0,pKeys.length),borderWidth:1,borderColor:'#141720'}],
+    {},'legendProduto',pKeys.map((k,i)=>({label:`${k}: ${fmt(pMap[k])}`,color:PALETTE[i]}))
+  );
+
+  // DOUGHNUT CIDADE
+  const cidMap={};
+  valid.forEach(r=>{cidMap[r.cidade_curso]=(cidMap[r.cidade_curso]||0)+(r.valor_final||0);});
+  const cidKeys=Object.keys(cidMap).sort((a,b)=>cidMap[b]-cidMap[a]);
+  mkChart('chartCidade','doughnut',cidKeys,
+    [{data:cidKeys.map(k=>cidMap[k]),backgroundColor:PALETTE.slice(0,cidKeys.length),borderWidth:1,borderColor:'#141720'}],
+    {},'legendCidade',cidKeys.map((k,i)=>({label:`${k}: ${fmt(cidMap[k])}`,color:PALETTE[i]}))
+  );
+
+  // TABELA
+  document.getElementById('tableCount').textContent=`(${valid.length})`;
+  const sorted=[...valid].sort((a,b)=>b.data_venda.localeCompare(a.data_venda));
+  document.getElementById('tableBody').innerHTML=sorted.map(r=>{
+    const stMap={validado:['pill-green','Validado'],pendencia:['pill-yellow','Pendência'],nao_conferido:['pill-gray','Aguardando']};
+    const [stClass,stLabel]=stMap[r.status]||['pill-gray','Aguardando'];
+    const cor=COR[r.consultor]||'#94a3b8';
+    return `<tr>
+      <td style="color:var(--muted);font-variant-numeric:tabular-nums">${(r.data_venda||'').slice(5).replace('-','/')}</td>
+      <td style="font-weight:700;color:${cor}">${r.consultor}</td>
+      <td style="color:var(--text)">${r.nome}</td>
+      <td><span class="pill pill-blue">${prodLabel(r.curso)}</span></td>
+      <td style="color:var(--muted);font-size:11px;white-space:nowrap">${r.cidade_curso||''}</td>
+      <td style="color:var(--muted);font-size:11px;white-space:nowrap">${r.pagamento||''}</td>
+      <td style="font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap">${fmt(r.valor_final)}</td>
+      <td><span class="pill ${stClass}">${stLabel}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function mkChart(id,type,labels,datasets,extraOpts,legendId,legendItems){
+  if(CHARTS[id]){CHARTS[id].destroy();}
+  const ctx=document.getElementById(id).getContext('2d');
+  CHARTS[id]=new Chart(ctx,{
+    type,data:{labels,datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      cutout:type==='doughnut'?'60%':undefined,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:c=>' '+(c.label?c.label+': ':'')+fmt(c.parsed.y??c.parsed)}}
+      },
+      ...extraOpts
+    }
+  });
+  if(legendId&&legendItems){
+    document.getElementById(legendId).innerHTML=
+      legendItems.map(it=>`<div class="legend-item"><div class="legend-sq" style="background:${it.color}"></div>${it.label}</div>`).join('');
+  }
+}
+
+// INIT
+(function(){
+  const mes=document.getElementById('selMes').value;
+  const rows=MESES[mes]||[];
+  const uniq=(fn)=>[...new Set(rows.map(fn).filter(Boolean))].sort();
+  uniq(r=>r.consultor).forEach(c=>{
+    const o=document.createElement('option');o.value=c;o.textContent=c;
+    document.getElementById('selConsultor').appendChild(o);
+  });
+  uniq(r=>r.curso).forEach(c=>{
+    const o=document.createElement('option');o.value=c;o.textContent=prodLabel(c);
+    document.getElementById('selProduto').appendChild(o);
+  });
+  uniq(r=>r.cidade_curso).forEach(c=>{
+    const o=document.createElement('option');o.value=c;o.textContent=c;
+    document.getElementById('selCidade').appendChild(o);
+  });
+  applyFilters();
+})();
+</script>
+</body>
+</html>
