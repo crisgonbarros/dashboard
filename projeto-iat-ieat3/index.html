@@ -366,7 +366,7 @@ function render(){
   const loteTotais = lotes.map(([key,label])=>{
     const total = daysInRange.reduce((a,d)=>a+(d[key]||0),0);
     return [label, total];
-  }).filter(([,total])=>total>0).sort((a,b)=>b[1]-a[1]);
+  }).filter(([,total])=>total>0);
 
   const loteBlock = document.getElementById('lote-breakdown');
   if (loteTotais.length===0){
