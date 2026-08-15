@@ -118,21 +118,14 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-h
 .tip-wrap{position:relative;display:inline-flex;align-items:center}
 .tip-icon{width:14px;height:14px;border-radius:99px;background:var(--s3);border:1px solid var(--dim);color:var(--muted);font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;transition:background .2s}
 .tip-icon:hover,.tip-icon:focus{background:var(--g2);color:#fff;border-color:var(--g2)}
-.tip-box{display:none}
 .tip-term{font-weight:700;color:var(--g1);font-size:11px;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px}
-/* Tooltip portal — renderizado no body */
-#tip-portal{
+.tip-box{
   position:fixed;
-  background:#1e1e3a;border:1px solid rgba(255,255,255,.15);border-radius:12px;
+  background:#1a1a38;border:1px solid rgba(255,255,255,.18);border-radius:12px;
   padding:12px 16px;width:240px;font-size:12px;color:#f0f0fa;line-height:1.7;
-  z-index:9999;pointer-events:none;
-  box-shadow:0 12px 40px rgba(0,0,0,.6);
-  opacity:0;transition:opacity .15s;
-}
-#tip-portal.show{opacity:1}
-#tip-portal::after{
-  content:'';position:absolute;top:100%;left:20px;
-  border:6px solid transparent;border-top-color:#1e1e3a;
+  z-index:99999;pointer-events:none;
+  box-shadow:0 16px 48px rgba(0,0,0,.7);
+  display:none;
 }
 
 /* PROGRESS */
@@ -320,11 +313,11 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
             <div class="tip-box"><span class="tip-term">Orçamento</span>Valor total disponível para investir em anúncios pagos no Meta (Facebook/Instagram). Quando esse valor acaba, os anúncios param.</div>
           </div>
         </span>
-        <span class="prog-vals">R$ 1.586 / R$ 3.000</span>
+        <span class="prog-vals">R$ 1.590 / R$ 3.000</span>
       </div>
       <div class="prog-track"><div class="prog-fill" data-pct="52.9"></div></div>
       <div class="prog-markers">
-        <span class="prog-sub">52,9% investido · R$ 1.414 restantes</span>
+        <span class="prog-sub">52,9% investido · R$ 1.410 restantes</span>
         <span class="prog-pct">53%</span>
       </div>
     </div>
@@ -344,8 +337,8 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
           <div class="tip-box"><span class="tip-term">Investimento</span>Total gasto em anúncios pagos até hoje. Quanto mais eficiente a campanha, mais leads geramos com esse dinheiro.</div></div>
         </div>
       </div>
-      <div class="kpi-value">R$ 1.586</div>
-      <div class="kpi-sub">de R$ 3.000 · R$ 1.414 restam</div>
+      <div class="kpi-value">R$ 1.590</div>
+      <div class="kpi-sub">de R$ 3.000 · R$ 1.410 restam</div>
       <div class="kpi-bar"><div class="kpi-bar-fill" data-pct="52.9"></div></div>
     </div>
 
@@ -370,7 +363,7 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
           <div class="tip-box"><span class="tip-term">CAC — Custo de Aquisição por Cliente</span>Quanto custou em média para colocar 1 pessoa real dentro do grupo VIP. Nossa meta é gastar no máximo R$ 10,00 por pessoa.</div></div>
         </div>
       </div>
-      <div class="kpi-value v-warn">R$ 8,35</div>
+      <div class="kpi-value v-warn">R$ 8,37</div>
       <div class="kpi-sub">meta R$ 10,00 · ainda ok</div>
       <div class="kpi-bar"><div class="kpi-bar-fill" data-pct="83.5" style="background:linear-gradient(90deg,var(--good),var(--warn))"></div></div>
     </div>
@@ -440,8 +433,8 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
           <div class="tip-box"><span class="tip-term">Connect Rate</span>De cada 100 pessoas que clicaram no anúncio, quantas realmente carregaram a página. Se for baixo, a página está demorando para abrir (especialmente no celular).</div></div>
         </div>
       </div>
-      <div class="kpi-value v-warn">74,7%</div>
-      <div class="kpi-sub">meta recomendada ≥ 85%</div>
+      <div class="kpi-value v-warn">74,7%*</div>
+      <div class="kpi-sub">*dado de 03–04/ago · atualizar no Meta Ads</div>
     </div>
 
   </div>
@@ -453,12 +446,12 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
   <div class="funnel">
     <div class="f-step">
       <div class="f-bar-bg" style="background:var(--muted);width:100%"></div>
-      <div class="f-num" style="color:var(--muted)">~2.100</div>
+      <div class="f-num" style="color:var(--muted)">2.070</div>
       <div class="f-info">
         <div class="f-name">Cliques nos anúncios
           <div class="tip-wrap"><span class="tip-icon" tabindex="0">?</span><div class="tip-box"><span class="tip-term">Cliques</span>Total de vezes que alguém tocou no anúncio para saber mais. É o primeiro passo do funil — mas clicar não significa entrar no grupo.</div></div>
         </div>
-        <div class="f-sub">Total de cliques acumulados · 03–14/ago</div>
+        <div class="f-sub">Total real da planilha Meta · 03–14/ago</div>
       </div>
       <div class="f-pct" style="color:var(--muted)">100%</div>
     </div>
@@ -469,7 +462,7 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
         <div class="f-name">Chegaram à página
           <div class="tip-wrap"><span class="tip-icon" tabindex="0">?</span><div class="tip-box"><span class="tip-term">Connect Rate</span>Nem todos que clicaram carregaram a página. Alguns desistiram antes de carregar — geralmente por lentidão no celular.</div></div>
         </div>
-        <div class="f-sub">Connect Rate 74,7% — ~532 cliques perdidos</div>
+        <div class="f-sub">Connect Rate 74,7%* (03–04/ago) — atualizar no Meta Ads Manager</div>
       </div>
       <div class="f-pct v-warn">74,7%</div>
     </div>
@@ -505,10 +498,10 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
     <div class="chart-card">
       <div class="chart-title">
         CPL por dia (R$)
-        <div class="tip-wrap"><span class="tip-icon" tabindex="0" data-tip="CPL diário|Custo por Lead de cada dia. A linha tracejada laranja é o limite de R$ 10,00. Barras vermelhas = acima da meta. Atenção quando a tendência sobe.">?</span></div>
+        <div class="tip-wrap"><span class="tip-icon" tabindex="0" >?<div class="tip-box"><span class="tip-term">CPL diário</span>Custo por Lead de cada dia. A linha tracejada laranja é o limite de R$ 10,00. Barras vermelhas = acima da meta. Atenção quando a tendência sobe.</div></span></div>
       </div>
       <div class="chart-desc">Linha de corte: R$ 10,00 — meta máxima aceitável</div>
-      <canvas id="chartCPL" height="120"></canvas>
+      <canvas id="chartCPL" height="120" style="max-width:100%;display:block"></canvas>
       <div class="chart-legend">
         <div class="cl-item"><div class="cl-dot" style="background:var(--good)"></div>Dentro da meta</div>
         <div class="cl-item"><div class="cl-dot" style="background:var(--bad)"></div>Acima da meta</div>
@@ -517,10 +510,10 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
     <div class="chart-card">
       <div class="chart-title">
         Entradas no grupo VIP por dia
-        <div class="tip-wrap"><span class="tip-icon" tabindex="0" data-tip="Entradas diárias|Quantas pessoas novas entraram no grupo VIP a cada dia. Dias com mais entradas indicam anúncios mais eficientes ou maior investimento naquele dia.">?</span></div>
+        <div class="tip-wrap"><span class="tip-icon" tabindex="0" >?<div class="tip-box"><span class="tip-term">Entradas diárias</span>Quantas pessoas novas entraram no grupo VIP a cada dia. Dias com mais entradas indicam anúncios mais eficientes ou maior investimento naquele dia.</div></span></div>
       </div>
       <div class="chart-desc">Leads reais (sem equipe/legacies) · 03–10/ago</div>
-      <canvas id="chartGRP" height="120"></canvas>
+      <canvas id="chartGRP" height="120" style="max-width:100%;display:block"></canvas>
     </div>
   </div>
 </div>
@@ -553,21 +546,29 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
         <th>Acumulado</th>
       </tr></thead>
       <tbody>
-        <tr><td class="bold">03/ago</td><td>R$ 106,32</td><td>27</td><td><span class="chip chip-g">R$ 4,23</span></td><td>4,56%</td><td class="v-good bold">31</td><td>1</td><td><span class="chip chip-g">3%</span></td><td>30</td></tr>
-        <tr><td class="bold">04/ago</td><td>R$ 195,46</td><td>79</td><td><span class="chip chip-g">R$ 2,71</span></td><td class="v-good">5,54%</td><td class="v-good bold">57</td><td>1</td><td><span class="chip chip-g">2%</span></td><td>86</td></tr>
-        <tr><td class="bold">05/ago</td><td>R$ 126,73</td><td>35</td><td><span class="chip chip-g">R$ 3,40</span></td><td>5,51%</td><td>30</td><td>2</td><td><span class="chip chip-g">7%</span></td><td>114</td></tr>
-        <tr><td class="bold">06/ago</td><td>R$ 76,29</td><td>15</td><td><span class="chip chip-g">R$ 4,68</span></td><td>4,32%</td><td class="v-warn">11</td><td class="v-bad bold">3</td><td><span class="chip chip-r">27%</span></td><td>122</td></tr>
-        <tr><td class="bold">07/ago</td><td>R$ 100,19</td><td>22</td><td><span class="chip chip-g">R$ 4,55</span></td><td class="v-warn">3,60%</td><td>16</td><td>0</td><td><span class="chip chip-g">0%</span></td><td>138</td></tr>
-        <tr><td class="bold">08/ago</td><td>R$ 146,01</td><td>25</td><td><span class="chip chip-w">R$ 6,60</span></td><td class="v-warn">3,51%</td><td>18</td><td>0</td><td><span class="chip chip-g">0%</span></td><td>156</td></tr>
-        <tr><td class="bold">09/ago</td><td>R$ 186,55</td><td>31</td><td><span class="chip chip-w">R$ 6,89</span></td><td class="v-warn">3,34%</td><td>28</td><td>1</td><td><span class="chip chip-g">4%</span></td><td>183</td></tr>
-        <tr><td class="bold">10/ago</td><td>R$ 152,68</td><td>33</td><td><span class="chip chip-g">R$ 4,43</span></td><td class="v-warn">3,29%</td><td>3</td><td>0</td><td><span class="chip chip-g">0%</span></td><td>186</td></tr>
-        <tr><td class="bold">11/ago</td><td>R$ 123,91</td><td>16</td><td><span class="chip chip-w">R$ 7,46</span></td><td class="v-bad">2,90%</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-        <tr><td class="bold">12/ago</td><td>R$ 107,10</td><td>14</td><td><span class="chip chip-w">R$ 7,25</span></td><td class="v-bad">2,79%</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-        <tr><td class="bold">13/ago</td><td>R$ 120,30</td><td>11</td><td><span class="chip chip-r">R$ 10,53</span></td><td class="v-bad">2,58%</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-        <tr><td class="bold">14/ago</td><td>R$ 144,91</td><td>12</td><td><span class="chip chip-r">R$ 12,08</span></td><td class="v-bad">2,76%</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td class="bold">03/ago</td><td>R$ 106,65</td><td>27</td><td><span class="chip chip-g">R$ 3,95</span></td><td>3,38%</td><td class="v-good bold">31</td><td>1</td><td><span class="chip chip-g">3%</span></td><td>30</td></tr>
+        <tr><td class="bold">04/ago</td><td>R$ 195,58</td><td>79</td><td><span class="chip chip-g">R$ 2,48</span></td><td>3,44%</td><td class="v-good bold">57</td><td>1</td><td><span class="chip chip-g">2%</span></td><td>86</td></tr>
+        <tr><td class="bold">05/ago</td><td>R$ 126,99</td><td>35</td><td><span class="chip chip-g">R$ 3,63</span></td><td>3,73%</td><td>30</td><td>2</td><td><span class="chip chip-g">7%</span></td><td>114</td></tr>
+        <tr><td class="bold">06/ago</td><td>R$ 76,55</td><td>15</td><td><span class="chip chip-g">R$ 5,10</span></td><td>3,11%</td><td class="v-warn">11</td><td>3</td><td><span class="chip chip-r">27%</span></td><td>122</td></tr>
+        <tr><td class="bold">07/ago</td><td>R$ 100,48</td><td>22</td><td><span class="chip chip-g">R$ 4,57</span></td><td class="v-warn">2,80%</td><td>16</td><td>0</td><td><span class="chip chip-g">0%</span></td><td>138</td></tr>
+        <tr><td class="bold">08/ago</td><td>R$ 146,01</td><td>25</td><td><span class="chip chip-g">R$ 5,84</span></td><td class="v-warn">2,42%</td><td>18</td><td>0</td><td><span class="chip chip-g">0%</span></td><td>156</td></tr>
+        <tr><td class="bold">09/ago</td><td>R$ 186,95</td><td>31</td><td><span class="chip chip-w">R$ 6,03</span></td><td class="v-warn">2,44%</td><td>28</td><td>1</td><td><span class="chip chip-g">4%</span></td><td>183</td></tr>
+        <tr><td class="bold">10/ago</td><td>R$ 153,20</td><td>33</td><td><span class="chip chip-g">R$ 4,64</span></td><td class="v-warn">2,27%</td><td>3</td><td>0</td><td><span class="chip chip-g">0%</span></td><td>186</td></tr>
+        <tr><td class="bold">11/ago</td><td>R$ 124,42</td><td>16</td><td><span class="chip chip-w">R$ 7,78</span></td><td class="v-bad">2,22%</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td class="bold">12/ago</td><td>R$ 107,45</td><td>14</td><td><span class="chip chip-w">R$ 7,68</span></td><td class="v-bad">2,21%</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td class="bold">13/ago</td><td>R$ 120,56</td><td>11</td><td><span class="chip chip-r">R$ 10,96</span></td><td class="v-bad">2,09%</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        <tr><td class="bold">14/ago</td><td>R$ 144,99</td><td>12</td><td><span class="chip chip-r">R$ 12,08</span></td><td class="v-bad">1,72%</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
       </tbody>
       <tfoot><tr>
-        <td>Total</td><td>R$ 1.586,45</td><td>320</td><td>R$ 4,96 médio</td><td>—</td><td>194</td><td>8</td><td>4,1%</td><td>~190</td>
+        <td><strong>Total</strong></td>
+        <td><strong>R$ 1.589,83</strong></td>
+        <td><strong>320</strong></td>
+        <td><strong>R$ 4,97 médio</strong></td>
+        <td>—</td>
+        <td><strong>194</strong></td>
+        <td><strong>8</strong></td>
+        <td><strong>4,1%</strong></td>
+        <td><strong>~190</strong></td>
       </tr></tfoot>
     </table>
     </div>
@@ -583,8 +584,8 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
     <div class="alert g">
       <div class="alert-ico">✅</div>
       <div>
-        <div class="alert-title">CAC do grupo em R$ 8,35 — dentro da meta de R$ 10,00</div>
-        <div class="alert-desc">Com R$ 1.586 investidos e ~190 leads reais no grupo, o custo por pessoa ainda está confortável. A meta só seria atingida com R$ 10,00 ou mais — ainda há margem.</div>
+        <div class="alert-title">CAC do grupo em R$ 8,37 — dentro da meta de R$ 10,00</div>
+        <div class="alert-desc">Com R$ 1.590 investidos e ~190 leads reais no grupo, o custo por pessoa ainda está confortável. A meta só seria atingida com R$ 10,00 ou mais — ainda há margem.</div>
       </div>
     </div>
 
@@ -592,7 +593,7 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
       <div class="alert-ico">✅</div>
       <div>
         <div class="alert-title">63% da meta do grupo atingida com 53% do orçamento</div>
-        <div class="alert-desc">Com R$ 1.414 restantes e 110 pessoas faltando, o orçamento daria para mais ~169 leads reais no ritmo atual — folga suficiente para fechar a meta de 300.</div>
+        <div class="alert-desc">Com R$ 1.410 restantes e 110 pessoas faltando, o orçamento daria para mais ~169 leads reais no ritmo atual — folga suficiente para fechar a meta de 300.</div>
       </div>
     </div>
 
@@ -601,6 +602,14 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
       <div>
         <div class="alert-title">Retenção de 95,9% — público engajado no grupo</div>
         <div class="alert-desc">De cada 100 pessoas que entraram no grupo, quase 96 continuam lá. Esse é um ótimo sinal de que o conteúdo e a proposta estão gerando interesse real.</div>
+      </div>
+    </div>
+
+    <div class="alert w">
+      <div class="alert-ico">⚠️</div>
+      <div>
+        <div class="alert-title">Clarity: pico de atenção migrou do Márcio para a seção de dores</div>
+        <div class="alert-desc">No período anterior (04–10/ago) a seção do Speaker concentrava 42% da atenção. Agora (09–15/ago) caiu para 17,9% e a seção "Para você" subiu de 9,9% para 26,1%. Sinal de público mais frio chegando — ainda se identifica com as dores mas não está engajando com o especialista.</div>
       </div>
     </div>
 
@@ -632,7 +641,7 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
       <div class="alert-ico">🚨</div>
       <div>
         <div class="alert-title">CPL nos dias 13 e 14/ago ultrapassou R$ 10,00</div>
-        <div class="alert-desc">13/ago: R$ 10,53 e 14/ago: R$ 12,08. A média geral ainda está em R$ 4,96 — saudável — mas a tendência diária exige atenção. Se não houver novos criativos, a média pode cruzar R$ 10 nos próximos dias.</div>
+        <div class="alert-desc">13/ago: R$ 10,96 e 14/ago: R$ 12,08. A média geral ainda está em R$ 4,97 — saudável — mas a tendência diária exige atenção. Se não houver novos criativos, a média pode cruzar R$ 10 nos próximos dias.</div>
       </div>
     </div>
 
@@ -641,29 +650,28 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
 
 <!-- CLARITY -->
 <div class="sec">
-  <div class="sec-hd"><span class="sec-title">Comportamento na página · Clarity · mobile · 1.608 pageviews</span></div>
+  <div class="sec-hd"><span class="sec-title">Comportamento na página · Clarity · mobile · 09–15/ago · 1.312 pageviews</span></div>
   <div class="g2">
     <div class="cl-card">
-      <div class="cl-title">Atenção por zona do scroll
-        <div class="tip-wrap"><span class="tip-icon" tabindex="0">?</span><div class="tip-box"><span class="tip-term">Mapa de atenção</span>Mostra em qual parte da página as pessoas ficam mais tempo. Quanto maior a porcentagem, mais essa seção prende atenção.</div></div>
+      <div class="cl-title">Atenção por zona · mobile · 09–15/ago · 1.312 pageviews
+        <div class="tip-wrap"><span class="tip-icon" tabindex="0">?</span><div class="tip-box"><span class="tip-term">Mapa de atenção</span>Mostra em qual parte da página as pessoas ficam mais tempo. Quanto maior a porcentagem, mais essa seção prende atenção. Desktop teve apenas 25 pageviews — sem volume estatístico.</div></div>
       </div>
-      <div class="cl-row"><span class="cl-dot" style="background:linear-gradient(135deg,var(--g1),var(--g2))"></span><span class="cl-lbl">Speaker / Programação (75–90%)</span><span class="cl-val v-good">42,1% 🏆</span></div>
-      <div class="cl-row"><span class="cl-dot" style="background:var(--good)"></span><span class="cl-lbl">Hero — topo da página (0–20%)</span><span class="cl-val">33,0%</span></div>
-      <div class="cl-row"><span class="cl-dot" style="background:var(--muted)"></span><span class="cl-lbl">Para você / Identificação (55–70%)</span><span class="cl-val">9,9%</span></div>
-      <div class="cl-row"><span class="cl-dot" style="background:var(--muted)"></span><span class="cl-lbl">Final / CTA (95–100%)</span><span class="cl-val">7,7%</span></div>
-      <div class="cl-row"><span class="cl-dot" style="background:var(--warn)"></span><span class="cl-lbl">Vídeo + benefícios (25–50%)</span><span class="cl-val v-warn">7,2% ⚠</span></div>
-      <div style="margin-top:10px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">📍 Pico: 80% do scroll = 7min14s · seção do Márcio</div>
+      <div class="cl-row"><span class="cl-dot" style="background:linear-gradient(135deg,var(--g1),var(--g2))"></span><span class="cl-lbl">Para você / Identificação (55–70%)</span><span class="cl-val v-good">26,1% 🏆 <span style="font-size:10px;color:var(--good)">↑16pp</span></span></div>
+      <div class="cl-row"><span class="cl-dot" style="background:var(--good)"></span><span class="cl-lbl">Hero — topo da página (0–20%)</span><span class="cl-val">30,1%</span></div>
+      <div class="cl-row"><span class="cl-dot" style="background:var(--warn)"></span><span class="cl-lbl">Speaker / Programação (75–90%)</span><span class="cl-val v-warn">17,9% <span style="font-size:10px;color:var(--bad)">↓24pp</span></span></div>
+      <div class="cl-row"><span class="cl-dot" style="background:var(--muted)"></span><span class="cl-lbl">Vídeo + benefícios (25–50%)</span><span class="cl-val">10,4%</span></div>
+      <div style="margin-top:10px;font-size:11px;color:var(--warn);border-top:1px solid var(--border);padding-top:8px">⚠️ Pico migrou: antes era o Márcio (42%), agora é a seção de dores (26%). Público mais frio chegando.</div>
     </div>
     <div class="cl-card">
-      <div class="cl-title">Toques e cliques · 1.505 total
-        <div class="tip-wrap"><span class="tip-icon" tabindex="0">?</span><div class="tip-box"><span class="tip-term">Mapa de toques</span>Onde as pessoas tocam na tela do celular. Mostra quais botões e elementos estão funcionando como CTAs reais.</div></div>
+      <div class="cl-title">Toques mobile · 936 total · 09–15/ago
+        <div class="tip-wrap"><span class="tip-icon" tabindex="0">?</span><div class="tip-box"><span class="tip-term">Mapa de toques</span>Onde as pessoas tocam na tela do celular. Mostra quais botões e elementos estão funcionando como CTAs reais. Taxa de toque por pageview caiu de 93,6% para 71,3% — público mais passivo no período recente.</div></div>
       </div>
-      <div class="cl-row"><span class="cl-dot" style="background:var(--good)"></span><span class="cl-lbl">Formulário completo (campos + enviar)</span><span class="cl-val v-good">1.026 (68,2%)</span></div>
-      <div class="cl-row"><span class="cl-dot" style="background:var(--good)"></span><span class="cl-lbl">CTA hero — botão principal</span><span class="cl-val">254 (16,9%)</span></div>
-      <div class="cl-row"><span class="cl-dot" style="background:var(--muted)"></span><span class="cl-lbl">Nav "Quero saber mais"</span><span class="cl-val">46 (3,1%)</span></div>
-      <div class="cl-row"><span class="cl-dot" style="background:var(--warn)"></span><span class="cl-lbl">Fecharam popup sem preencher</span><span class="cl-val v-warn">21 (1,4%)</span></div>
-      <div class="cl-row"><span class="cl-dot" style="background:var(--muted)"></span><span class="cl-lbl">CTA seção vídeo + speaker</span><span class="cl-val">21 (1,4%)</span></div>
-      <div style="margin-top:10px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Dados exclusivamente mobile · desktop sem volume estatístico</div>
+      <div class="cl-row"><span class="cl-dot" style="background:var(--good)"></span><span class="cl-lbl">Formulário completo (campos + enviar)</span><span class="cl-val v-good">583 (62,3%)</span></div>
+      <div class="cl-row"><span class="cl-dot" style="background:var(--good)"></span><span class="cl-lbl">CTA hero — botão principal</span><span class="cl-val">154 (16,5%)</span></div>
+      <div class="cl-row"><span class="cl-dot" style="background:var(--muted)"></span><span class="cl-lbl">Nav "Quero saber mais"</span><span class="cl-val">31 (3,3%)</span></div>
+      <div class="cl-row"><span class="cl-dot" style="background:var(--muted)"></span><span class="cl-lbl">CTA seção speaker</span><span class="cl-val">8 (0,9%)</span></div>
+      <div class="cl-row"><span class="cl-dot" style="background:var(--warn)"></span><span class="cl-lbl">Fecharam popup sem preencher</span><span class="cl-val v-warn">14 (1,5%)</span></div>
+      <div style="margin-top:10px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:8px">Desktop: 25 pageviews · 9 cliques — sem volume estatístico relevante</div>
     </div>
   </div>
 </div>
@@ -677,39 +685,86 @@ footer{text-align:center;font-size:11px;color:var(--dim);border-top:1px solid va
 </div><!-- /wrap -->
 
 <script>
-// Tooltip portal
-const portal = document.createElement('div');
-portal.id = 'tip-portal';
-document.body.appendChild(portal);
+// Tooltips — teleport para body, funciona em qualquer ambiente
+(function() {
+  // Criar container único no body
+  const overlay = document.createElement('div');
+  overlay.id = 'tip-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:99999';
+  document.body.appendChild(overlay);
 
-document.querySelectorAll('.tip-icon[data-tip]').forEach(icon => {
-  function showTip(e) {
-    const [term, desc] = icon.dataset.tip.split('|');
-    portal.innerHTML = `<span class="tip-term">${term}</span>${desc}`;
-    portal.classList.add('show');
-    positionPortal(e);
+  let activeBox = null;
+
+  function showTip(icon) {
+    hideTip();
+    const wrap = icon.closest('.tip-wrap');
+    if (!wrap) return;
+    const srcBox = wrap.querySelector('.tip-box');
+    if (!srcBox) return;
+
+    // Clonar o tip-box e mover para overlay
+    const clone = srcBox.cloneNode(true);
+    clone.style.cssText = [
+      'position:absolute',
+      'background:#1a1a38',
+      'border:1px solid rgba(255,255,255,.18)',
+      'border-radius:12px',
+      'padding:12px 16px',
+      'width:240px',
+      'font-size:12px',
+      'color:#f0f0fa',
+      'line-height:1.7',
+      'pointer-events:none',
+      'box-shadow:0 16px 48px rgba(0,0,0,.7)',
+      'display:block',
+      'visibility:hidden'
+    ].join(';');
+    overlay.appendChild(clone);
+    activeBox = clone;
+
+    // Medir após render
+    requestAnimationFrame(() => {
+      const rect = icon.getBoundingClientRect();
+      const bw = 240;
+      const bh = clone.offsetHeight;
+      let left = rect.left + rect.width / 2 - bw / 2;
+      let top = rect.top - bh - 10;
+      if (top < 8) top = rect.bottom + 10;
+      if (left < 8) left = 8;
+      if (left + bw > window.innerWidth - 8) left = window.innerWidth - bw - 8;
+      clone.style.left = left + 'px';
+      clone.style.top = top + 'px';
+      clone.style.visibility = 'visible';
+    });
   }
-  function hideTip() { portal.classList.remove('show'); }
-  function positionPortal(e) {
-    const rect = icon.getBoundingClientRect();
-    let left = rect.left + rect.width/2 - 120;
-    let top = rect.top - portal.offsetHeight - 10 + window.scrollY;
-    if (left < 8) left = 8;
-    if (left + 240 > window.innerWidth - 8) left = window.innerWidth - 248;
-    portal.style.left = left + 'px';
-    portal.style.top = top + 'px';
+
+  function hideTip() {
+    if (activeBox) {
+      activeBox.remove();
+      activeBox = null;
+    }
   }
-  icon.addEventListener('mouseenter', showTip);
-  icon.addEventListener('mouseleave', hideTip);
-  icon.addEventListener('click', e => {
-    e.stopPropagation();
-    if (portal.classList.contains('show')) { hideTip(); }
-    else { showTip(e); }
+
+  document.querySelectorAll('.tip-icon').forEach(icon => {
+    icon.addEventListener('mouseenter', () => showTip(icon));
+    icon.addEventListener('mouseleave', hideTip);
+    icon.addEventListener('click', e => {
+      e.stopPropagation();
+      activeBox ? hideTip() : showTip(icon);
+    });
+    icon.addEventListener('touchstart', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      activeBox ? hideTip() : showTip(icon);
+    }, { passive: false });
   });
-});
-document.addEventListener('click', () => portal.classList.remove('show'));
 
-// Logo
+  document.addEventListener('click', hideTip);
+  document.addEventListener('touchstart', e => {
+    if (!e.target.closest('.tip-wrap')) hideTip();
+  });
+})();
+
 // Logo
 document.getElementById('logo').src = 'https://github.com/crisgonbarros/dashboard/blob/main/ime-jata%C3%AD/Evo-01%20(3).png?raw=true';
 
@@ -735,7 +790,7 @@ document.addEventListener('click', () => {
 
 // Dados
 const diasCPL = ['03/ago','04/ago','05/ago','06/ago','07/ago','08/ago','09/ago','10/ago','11/ago','12/ago','13/ago','14/ago'];
-const cpls    = [4.23, 2.71, 3.40, 4.68, 4.55, 6.60, 6.89, 4.43, 7.46, 7.25, 10.53, 12.08];
+const cpls    = [3.95, 2.48, 3.63, 5.10, 4.57, 5.84, 6.03, 4.64, 7.78, 7.68, 10.96, 12.08];
 const diasGRP = ['03/ago','04/ago','05/ago','06/ago','07/ago','08/ago','09/ago','10/ago'];
 const grps    = [31, 57, 30, 11, 16, 18, 28, 3];
 
@@ -747,30 +802,85 @@ chartScript.onload = () => {
   Chart.defaults.font.family = 'Inter, sans-serif';
   Chart.defaults.font.size = 11;
 
+  // Gradiente EVO: #5de8d4 → #a855f7 → #f97316
+  function makeGradEVO(ctx, chartArea) {
+    const g = ctx.createLinearGradient(chartArea.left, 0, chartArea.right, 0);
+    g.addColorStop(0, '#5de8d4');
+    g.addColorStop(0.5, '#a855f7');
+    g.addColorStop(1, '#f97316');
+    return g;
+  }
+
+  function makeGradGood(ctx, h) {
+    const g = ctx.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, 'rgba(0,229,160,0.9)');
+    g.addColorStop(1, 'rgba(0,229,160,0.3)');
+    return g;
+  }
+
+  function makeGradBad(ctx, h) {
+    const g = ctx.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, 'rgba(255,77,109,0.9)');
+    g.addColorStop(1, 'rgba(245,166,35,0.5)');
+    return g;
+  }
+
+  // Plugin para gradiente vertical por barra (CPL)
+  const cplGradPlugin = {
+    id: 'cplGrad',
+    beforeDatasetsDraw(chart) {
+      const { ctx, chartArea, data } = chart;
+      if (!chartArea) return;
+      const meta = chart.getDatasetMeta(0);
+      meta.data.forEach((bar, i) => {
+        const v = data.datasets[0].data[i];
+        const grad = v >= 10 ? makeGradBad(ctx, chartArea.height) : makeGradGood(ctx, chartArea.height);
+        bar.options.backgroundColor = grad;
+      });
+    }
+  };
+
+  // Plugin para gradiente EVO no grupo
+  const grpGradPlugin = {
+    id: 'grpGrad',
+    beforeDatasetsDraw(chart) {
+      const { ctx, chartArea } = chart;
+      if (!chartArea) return;
+      const meta = chart.getDatasetMeta(0);
+      const grad = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+      grad.addColorStop(0, 'rgba(93,232,212,0.95)');
+      grad.addColorStop(0.5, 'rgba(168,85,247,0.8)');
+      grad.addColorStop(1, 'rgba(249,115,22,0.6)');
+      meta.data.forEach(bar => { bar.options.backgroundColor = grad; });
+    }
+  };
+
   // CPL Chart
-  const cplCtx = document.getElementById('chartCPL');
-  if (cplCtx) {
-    const cplColors = cpls.map(v => v >= 10 ? '#ff4d6d' : '#00e5a0');
-    new Chart(cplCtx, {
+  const cplEl = document.getElementById('chartCPL');
+  if (cplEl) {
+    cplEl.style.maxWidth = '100%';
+    new Chart(cplEl, {
       type: 'bar',
+      plugins: [cplGradPlugin],
       data: {
         labels: diasCPL,
         datasets: [
           {
             label: 'CPL (R$)',
             data: cpls,
-            backgroundColor: cpls.map(v => v >= 10 ? 'rgba(255,77,109,0.7)' : 'rgba(0,229,160,0.6)'),
-            borderColor: cplColors,
-            borderWidth: 1.5,
-            borderRadius: 5,
+            backgroundColor: 'rgba(0,229,160,0.7)',
+            borderColor: 'transparent',
+            borderWidth: 0,
+            borderRadius: 6,
+            borderSkipped: false,
           },
           {
-            label: 'Meta máxima R$ 10',
+            label: 'Meta R$ 10',
             data: Array(cpls.length).fill(10),
             type: 'line',
             borderColor: '#f5a623',
             borderWidth: 2,
-            borderDash: [6,4],
+            borderDash: [6, 4],
             pointRadius: 0,
             fill: false,
             tension: 0,
@@ -779,6 +889,7 @@ chartScript.onload = () => {
       },
       options: {
         responsive: true,
+        maintainAspectRatio: true,
         animation: { duration: 1200, easing: 'easeOutQuart' },
         plugins: {
           legend: { display: false },
@@ -787,15 +898,20 @@ chartScript.onload = () => {
             borderColor: 'rgba(255,255,255,.1)',
             borderWidth: 1,
             callbacks: {
-              label: ctx => ctx.datasetIndex === 0 ? ` R$ ${ctx.parsed.y.toFixed(2)}` : ` Meta: R$ ${ctx.parsed.y.toFixed(2)}`
+              label: ctx => ctx.datasetIndex === 0
+                ? ` R$ ${ctx.parsed.y.toFixed(2)}`
+                : ` Limite: R$ ${ctx.parsed.y.toFixed(2)}`
             }
           }
         },
         scales: {
-          x: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { maxRotation: 45 } },
+          x: {
+            grid: { color: 'rgba(255,255,255,.04)' },
+            ticks: { maxRotation: 45, font: { size: 10 } }
+          },
           y: {
             grid: { color: 'rgba(255,255,255,.04)' },
-            ticks: { callback: v => 'R$' + v },
+            ticks: { callback: v => 'R$' + v, font: { size: 10 } },
             suggestedMax: 14
           }
         }
@@ -804,23 +920,27 @@ chartScript.onload = () => {
   }
 
   // GRP Chart
-  const grpCtx = document.getElementById('chartGRP');
-  if (grpCtx) {
-    new Chart(grpCtx, {
+  const grpEl = document.getElementById('chartGRP');
+  if (grpEl) {
+    grpEl.style.maxWidth = '100%';
+    new Chart(grpEl, {
       type: 'bar',
+      plugins: [grpGradPlugin],
       data: {
         labels: diasGRP,
         datasets: [{
-          label: 'Entradas no grupo',
+          label: 'Entradas',
           data: grps,
-          backgroundColor: 'rgba(93,232,212,0.55)',
-          borderColor: '#5de8d4',
-          borderWidth: 1.5,
-          borderRadius: 5,
+          backgroundColor: 'rgba(93,232,212,0.8)',
+          borderColor: 'transparent',
+          borderWidth: 0,
+          borderRadius: 6,
+          borderSkipped: false,
         }]
       },
       options: {
         responsive: true,
+        maintainAspectRatio: true,
         animation: { duration: 1200, easing: 'easeOutQuart' },
         plugins: {
           legend: { display: false },
@@ -832,8 +952,8 @@ chartScript.onload = () => {
           }
         },
         scales: {
-          x: { grid: { color: 'rgba(255,255,255,.04)' } },
-          y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { stepSize: 10 } }
+          x: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { font: { size: 10 } } },
+          y: { grid: { color: 'rgba(255,255,255,.04)' }, ticks: { stepSize: 10, font: { size: 10 } } }
         }
       }
     });
