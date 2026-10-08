@@ -1,1 +1,495 @@
-new
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projeto IAT — Monitor de Vendas</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%; overflow: hidden;
+  background: #0a0608;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  user-select: none;
+}
+
+/* ── FUNDO ── */
+#bg {
+  position: fixed; inset: 0; z-index: 0;
+  background-image: url('https://github.com/crisgonbarros/dashboard/blob/main/projeto-iat-comercial/img/IAT-ARTE-16x9.png?raw=true');
+  background-size: cover;
+  background-position: center;
+  transition: filter .3s;
+}
+#bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(5, 3, 4, 0.45);
+}
+
+/* ── FLASH DE CELEBRAÇÃO ── */
+#flash {
+  position: fixed; inset: 0; z-index: 5;
+  background: #fff;
+  opacity: 0; pointer-events: none;
+  transition: opacity .08s;
+}
+#flash.on { opacity: 0.85; }
+
+/* ── CANVAS DE CONFETES ── */
+#confetti-canvas {
+  position: fixed; inset: 0; z-index: 6;
+  pointer-events: none;
+}
+
+/* ── STATUS BAR (canto inferior direito) ── */
+#status-bar {
+  position: fixed; bottom: 28px; right: 32px; z-index: 10;
+  text-align: right;
+  opacity: 0.75;
+}
+#relogio {
+  font-size: 42px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+  font-variant-numeric: tabular-nums;
+}
+#status-linha {
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+#dot-ao-vivo {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #e53935;
+  margin-right: 6px;
+  vertical-align: middle;
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* ── LOGO PULSE (tela de espera) ── */
+#logo-glow {
+  position: fixed; inset: 0; z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+#logo-glow::after {
+  content: '';
+  position: absolute;
+  width: 380px; height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(220,30,30,0.18) 0%, transparent 70%);
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+@keyframes glow-pulse {
+  0%, 100% { transform: scale(1);   opacity: 0.6; }
+  50%       { transform: scale(1.15); opacity: 1;   }
+}
+
+/* ── CARD DE CELEBRAÇÃO ── */
+#card-venda {
+  position: fixed; inset: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity .4s cubic-bezier(.34,1.56,.64,1), transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+#card-venda.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#card-inner {
+  background: linear-gradient(145deg, rgba(15,8,10,0.97) 0%, rgba(30,8,8,0.97) 100%);
+  border: 2px solid rgba(220,30,30,0.7);
+  border-radius: 24px;
+  padding: 56px 80px;
+  text-align: center;
+  box-shadow:
+    0 0 0 1px rgba(220,30,30,0.2),
+    0 0 80px rgba(220,30,30,0.35),
+    0 32px 80px rgba(0,0,0,0.7);
+  max-width: 720px;
+  width: 90vw;
+  animation: card-flicker 0s;
+}
+
+#card-topo {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #e53935;
+  margin-bottom: 16px;
+}
+#card-emoji {
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 20px;
+  display: block;
+  animation: emoji-bounce 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes emoji-bounce {
+  0%   { transform: scale(0) rotate(-15deg); }
+  100% { transform: scale(1) rotate(0deg);   }
+}
+
+#card-valor {
+  font-size: clamp(64px, 10vw, 110px);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -2px;
+  text-shadow:
+    0 0 40px rgba(255,255,255,0.3),
+    0 4px 30px rgba(0,0,0,0.5);
+  margin-bottom: 8px;
+}
+
+#card-label-venda {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+#card-divider {
+  width: 60px; height: 2px;
+  background: linear-gradient(90deg, transparent, #e53935, transparent);
+  margin: 0 auto 28px;
+}
+
+#card-consultor-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 10px;
+}
+#card-consultor-nome {
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 800;
+  color: #e53935;
+  letter-spacing: -0.5px;
+  text-shadow: 0 0 30px rgba(229,57,53,0.6);
+}
+
+/* borda piscando no card durante celebração */
+@keyframes border-pulse {
+  0%, 100% { border-color: rgba(220,30,30,0.7); box-shadow: 0 0 0 1px rgba(220,30,30,0.2), 0 0 80px rgba(220,30,30,0.35), 0 32px 80px rgba(0,0,0,0.7); }
+  50%       { border-color: rgba(220,30,30,1);   box-shadow: 0 0 0 2px rgba(220,30,30,0.5), 0 0 120px rgba(220,30,30,0.6), 0 32px 80px rgba(0,0,0,0.7); }
+}
+#card-inner.celebrando {
+  animation: border-pulse 0.8s ease-in-out 4;
+}
+
+/* tela piscando */
+@keyframes screen-flash {
+  0%   { background: rgba(220,30,30,0.12); }
+  50%  { background: rgba(220,30,30,0.25); }
+  100% { background: rgba(220,30,30,0.12); }
+}
+#bg-flash-overlay {
+  position: fixed; inset: 0; z-index: 4;
+  pointer-events: none; opacity: 0;
+}
+#bg-flash-overlay.piscando {
+  animation: screen-flash 0.6s ease-in-out 6;
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<!-- Fundo com imagem IAT -->
+<div id="bg"></div>
+<div id="bg-flash-overlay"></div>
+
+<!-- Glow pulsando sobre a logo (tela de espera) -->
+<div id="logo-glow"></div>
+
+<!-- Flash branco inicial -->
+<div id="flash"></div>
+
+<!-- Canvas confetes -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- Status bar -->
+<div id="status-bar">
+  <div id="relogio">00:00:00</div>
+  <div id="status-linha">
+    <span id="dot-ao-vivo"></span>
+    AO VIVO · <span id="ultimo-update">aguardando...</span>
+  </div>
+</div>
+
+<!-- Card de nova venda -->
+<div id="card-venda">
+  <div id="card-inner">
+    <div id="card-topo">🎯 Nova Venda Realizada</div>
+    <span id="card-emoji">🎉</span>
+    <div id="card-valor">R$ 0,00</div>
+    <div id="card-label-venda">venda confirmada</div>
+    <div id="card-divider"></div>
+    <div id="card-consultor-label">Consultor</div>
+    <div id="card-consultor-nome">—</div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIGURAÇÃO ────────────────────────────────────────────────────────────
+const WEBAPP_URL    = 'https://script.google.com/macros/s/AKfycbx5wlWgYNW0E3-YZNeAVqDTPwLZfSNmxvsuYEAL3Zl1ob0uZbQna9kHmTPl8KTdPWPpyQ/exec';
+const POLL_INTERVAL = 20 * 1000;   // 20 segundos
+const CARD_DURACAO  = 9 * 1000;    // card visível por 9 segundos
+
+// ─── ESTADO ──────────────────────────────────────────────────────────────────
+// Chave única por venda: data_venda + nome + valor_final
+function chaveVenda(v) {
+  return (v.data_venda || '') + '|' + (v.nome || '') + '|' + (v.valor_final || 0);
+}
+
+let vendasConhecidas = null; // null = primeira carga (não celebra)
+let celebrandoTimeout = null;
+
+// ─── RELÓGIO ─────────────────────────────────────────────────────────────────
+function atualizarRelogio() {
+  const agora = new Date();
+  const h = String(agora.getHours()).padStart(2,'0');
+  const m = String(agora.getMinutes()).padStart(2,'0');
+  const s = String(agora.getSeconds()).padStart(2,'0');
+  document.getElementById('relogio').textContent = h + ':' + m + ':' + s;
+}
+setInterval(atualizarRelogio, 1000);
+atualizarRelogio();
+
+// ─── FORMATAR VALOR ──────────────────────────────────────────────────────────
+function fmtValor(v) {
+  return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// ─── SOM DE CELEBRAÇÃO (Web Audio API) ───────────────────────────────────────
+function tocarSom() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Fanfarra: sequência de notas
+    const notas = [
+      { freq: 523.25, t: 0,    dur: 0.12 }, // C5
+      { freq: 659.25, t: 0.10, dur: 0.12 }, // E5
+      { freq: 783.99, t: 0.20, dur: 0.12 }, // G5
+      { freq: 1046.5, t: 0.30, dur: 0.35 }, // C6 longa
+      { freq: 880.00, t: 0.32, dur: 0.12 }, // A5
+      { freq: 1046.5, t: 0.44, dur: 0.45 }, // C6 final
+    ];
+
+    notas.forEach(function(n) {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(n.freq, ctx.currentTime + n.t);
+      gain.gain.setValueAtTime(0, ctx.currentTime + n.t);
+      gain.gain.linearRampToValueAtTime(0.28, ctx.currentTime + n.t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + n.t + n.dur);
+      osc.start(ctx.currentTime + n.t);
+      osc.stop(ctx.currentTime + n.t + n.dur + 0.05);
+    });
+
+    // Tambor de fundo
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.3, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 3) * 0.4;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(ctx.destination);
+    src.start(ctx.currentTime);
+
+  } catch(e) { console.warn('Áudio não disponível:', e); }
+}
+
+// ─── CONFETES ────────────────────────────────────────────────────────────────
+(function() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx2   = canvas.getContext('2d');
+  let particulas = [];
+  let animFrame  = null;
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const CORES = ['#e53935','#ffffff','#ffd600','#ff6f00','#b71c1c','#ef9a9a','#ffee58'];
+
+  function criarParticula(x) {
+    return {
+      x: x !== undefined ? x : Math.random() * canvas.width,
+      y: canvas.height + 10,
+      w: Math.random() * 10 + 6,
+      h: Math.random() * 5 + 3,
+      cor: CORES[Math.floor(Math.random() * CORES.length)],
+      vx: (Math.random() - 0.5) * 6,
+      vy: -(Math.random() * 18 + 12),
+      rot: Math.random() * Math.PI * 2,
+      vrot: (Math.random() - 0.5) * 0.3,
+      gravidade: Math.random() * 0.4 + 0.3,
+      alpha: 1,
+    };
+  }
+
+  window.dispararConfetes = function() {
+    particulas = [];
+    // rajadas de vários pontos
+    for (let i = 0; i < 220; i++) {
+      const x = (canvas.width * 0.1) + Math.random() * (canvas.width * 0.8);
+      particulas.push(criarParticula(x));
+    }
+    if (animFrame) cancelAnimationFrame(animFrame);
+    animar();
+  };
+
+  function animar() {
+    ctx2.clearRect(0, 0, canvas.width, canvas.height);
+    particulas = particulas.filter(p => p.alpha > 0.01);
+
+    particulas.forEach(function(p) {
+      p.x   += p.vx;
+      p.y   += p.vy;
+      p.vy  += p.gravidade;
+      p.rot += p.vrot;
+      if (p.y > canvas.height * 0.4) p.alpha -= 0.012;
+
+      ctx2.save();
+      ctx2.globalAlpha = Math.max(0, p.alpha);
+      ctx2.translate(p.x, p.y);
+      ctx2.rotate(p.rot);
+      ctx2.fillStyle = p.cor;
+      ctx2.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx2.restore();
+    });
+
+    if (particulas.length > 0) {
+      animFrame = requestAnimationFrame(animar);
+    } else {
+      ctx2.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+})();
+
+// ─── CELEBRAÇÃO ──────────────────────────────────────────────────────────────
+function celebrar(venda) {
+  // Preenche o card
+  document.getElementById('card-valor').textContent       = fmtValor(venda.valor_final);
+  document.getElementById('card-consultor-nome').textContent = venda.consultor || 'Consultor';
+
+  // Mostra card
+  const cardEl  = document.getElementById('card-venda');
+  const cardIn  = document.getElementById('card-inner');
+  cardEl.classList.add('show');
+  cardIn.classList.remove('celebrando');
+  void cardIn.offsetWidth; // force reflow
+  cardIn.classList.add('celebrando');
+
+  // Flash branco
+  const flash = document.getElementById('flash');
+  flash.classList.add('on');
+  setTimeout(() => flash.classList.remove('on'), 180);
+
+  // Piscar tela
+  const overlay = document.getElementById('bg-flash-overlay');
+  overlay.classList.remove('piscando');
+  void overlay.offsetWidth;
+  overlay.classList.add('piscando');
+  setTimeout(() => overlay.classList.remove('piscando'), 4000);
+
+  // Som
+  tocarSom();
+
+  // Confetes
+  window.dispararConfetes();
+
+  // Esconde após duração
+  if (celebrandoTimeout) clearTimeout(celebrandoTimeout);
+  celebrandoTimeout = setTimeout(function() {
+    cardEl.classList.remove('show');
+    cardIn.classList.remove('celebrando');
+  }, CARD_DURACAO);
+}
+
+// ─── POLLING ─────────────────────────────────────────────────────────────────
+function poll() {
+  fetch(WEBAPP_URL)
+    .then(function(r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(dados) {
+      if (dados && dados.error) throw new Error(dados.message);
+
+      // Reúne todas as vendas de todos os meses em um Set de chaves
+      const todasVendas = {};
+      Object.keys(dados).forEach(function(mes) {
+        (dados[mes] || []).forEach(function(v) {
+          todasVendas[chaveVenda(v)] = v;
+        });
+      });
+
+      const agora = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+      document.getElementById('ultimo-update').textContent = 'atualizado às ' + agora;
+
+      if (vendasConhecidas === null) {
+        // Primeira carga: apenas memoriza, não celebra
+        vendasConhecidas = todasVendas;
+        return;
+      }
+
+      // Detecta vendas novas (chaves que não existiam antes)
+      const novas = Object.keys(todasVendas).filter(function(k) {
+        return !vendasConhecidas[k];
+      });
+
+      // Celebra a mais recente (ou todas em sequência se várias)
+      if (novas.length > 0) {
+        // Ordena por valor_final desc para celebrar a maior primeiro
+        novas.sort(function(a, b) {
+          return (todasVendas[b].valor_final || 0) - (todasVendas[a].valor_final || 0);
+        });
+        celebrar(todasVendas[novas[0]]);
+      }
+
+      vendasConhecidas = todasVendas;
+    })
+    .catch(function(err) {
+      console.warn('Erro no poll:', err);
+      const agora = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+      document.getElementById('ultimo-update').textContent = 'erro às ' + agora;
+    });
+}
+
+// Inicia polling
+poll();
+setInterval(poll, POLL_INTERVAL);
+</script>
+</body>
+</html>
