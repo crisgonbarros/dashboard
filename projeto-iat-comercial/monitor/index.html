@@ -43,6 +43,39 @@ html, body {
   pointer-events: none;
 }
 
+/* ── GRADIENTE INFERIOR DIREITO (destaca relógio) ── */
+#gradient-clock {
+  position: fixed;
+  bottom: 0; right: 0;
+  width: 520px; height: 260px;
+  z-index: 9;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 100% 100%,
+    rgba(0,0,0,0.72) 0%,
+    rgba(0,0,0,0.45) 40%,
+    transparent 75%
+  );
+  /* blur suave na borda da foto */
+  -webkit-mask-image: radial-gradient(ellipse at 100% 100%, black 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 100% 100%, black 30%, transparent 75%);
+}
+
+/* ── GRADIENTE INFERIOR ESQUERDO (destaca objetivo) ── */
+#gradient-goal {
+  position: fixed;
+  bottom: 0; left: 0;
+  width: 520px; height: 260px;
+  z-index: 9;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 0% 100%,
+    rgba(0,0,0,0.72) 0%,
+    rgba(0,0,0,0.45) 40%,
+    transparent 75%
+  );
+  -webkit-mask-image: radial-gradient(ellipse at 0% 100%, black 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 0% 100%, black 30%, transparent 75%);
+}
+
 /* ── STATUS BAR (canto inferior direito) ── */
 #status-bar {
   position: fixed; bottom: 28px; right: 32px; z-index: 10;
@@ -200,6 +233,66 @@ html, body {
   animation: border-pulse 0.8s ease-in-out 4;
 }
 
+/* ── PAINEL OBJETIVO DO MÊS (canto inferior esquerdo) ── */
+#objetivo-panel {
+  position: fixed; bottom: 28px; left: 32px; z-index: 10;
+  opacity: 0.85;
+  min-width: 260px;
+  max-width: 320px;
+}
+#objetivo-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 6px;
+}
+#objetivo-realizado {
+  font-size: 36px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.8);
+  margin-bottom: 4px;
+}
+#objetivo-meta-txt {
+  font-size: 11px;
+  color: rgba(255,255,255,0.38);
+  margin-bottom: 10px;
+  letter-spacing: 0.05em;
+}
+#objetivo-barra-wrap {
+  width: 100%;
+  height: 22px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 11px;
+  overflow: hidden;
+  position: relative;
+}
+#objetivo-barra-fill {
+  height: 100%;
+  border-radius: 11px;
+  background: linear-gradient(90deg, #e53935 0%, #ff7043 100%);
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+  min-width: 2px;
+  position: relative;
+}
+#objetivo-pct {
+  position: absolute;
+  right: 10px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  white-space: nowrap;
+  z-index: 1;
+}
+
 /* tela piscando */
 @keyframes screen-flash {
   0%   { background: rgba(220,30,30,0.12); }
@@ -222,6 +315,10 @@ html, body {
 <div id="bg"></div>
 <div id="bg-flash-overlay"></div>
 
+<!-- Gradientes de contraste nos cantos inferiores -->
+<div id="gradient-clock"></div>
+<div id="gradient-goal"></div>
+
 <!-- Glow pulsando sobre a logo (tela de espera) -->
 <div id="logo-glow"></div>
 
@@ -237,6 +334,17 @@ html, body {
   <div id="status-linha">
     <span id="dot-ao-vivo"></span>
     AO VIVO · <span id="ultimo-update">aguardando...</span>
+  </div>
+</div>
+
+<!-- Painel Objetivo do Mês -->
+<div id="objetivo-panel">
+  <div id="objetivo-label">🎯 Objetivo do Mês</div>
+  <div id="objetivo-realizado">R$ —</div>
+  <div id="objetivo-meta-txt">meta: R$ 150.000</div>
+  <div id="objetivo-barra-wrap">
+    <div id="objetivo-barra-fill" style="width:0%"></div>
+    <div id="objetivo-pct">0%</div>
   </div>
 </div>
 
@@ -258,6 +366,7 @@ html, body {
 const WEBAPP_URL    = 'https://script.google.com/macros/s/AKfycbx5wlWgYNW0E3-YZNeAVqDTPwLZfSNmxvsuYEAL3Zl1ob0uZbQna9kHmTPl8KTdPWPpyQ/exec?nocache=1';
 const POLL_INTERVAL = 20 * 1000;   // 20 segundos (lê direto da planilha, sem cache)
 const CARD_DURACAO  = 20 * 1000;   // card visível por 20 segundos
+const META_MES      = 150000;      // ← Objetivo do mês em R$ (ajuste aqui)
 
 // ─── ESTADO ──────────────────────────────────────────────────────────────────
 // Chave única por venda: data_venda + nome + valor_final
@@ -282,6 +391,59 @@ atualizarRelogio();
 // ─── FORMATAR VALOR ──────────────────────────────────────────────────────────
 function fmtValor(v) {
   return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function fmtValorCurto(v) {
+  // Ex: R$ 87.450 (sem centavos, mais limpo no monitor)
+  return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+// ─── ATUALIZAR PAINEL OBJETIVO ───────────────────────────────────────────────
+function atualizarObjetivo(dados) {
+  // Pega o mês atual no formato AAAA-MM
+  const agora   = new Date();
+  const mesAtual = agora.getFullYear() + '-' + String(agora.getMonth() + 1).padStart(2, '0');
+
+  // Soma apenas vendas do mês atual
+  const vendasMes = dados[mesAtual] || [];
+  const totalMes  = vendasMes.reduce(function(acc, v) {
+    return acc + (parseFloat(v.valor_final) || 0);
+  }, 0);
+
+  const pct     = Math.min(Math.round((totalMes / META_MES) * 100), 100);
+  const pctReal = Math.min((totalMes / META_MES) * 100, 100);
+
+  // Atualiza textos
+  document.getElementById('objetivo-realizado').textContent = fmtValorCurto(totalMes);
+
+  // Atualiza barra
+  const fill = document.getElementById('objetivo-barra-fill');
+  const pctEl = document.getElementById('objetivo-pct');
+  fill.style.width = pctReal.toFixed(1) + '%';
+  pctEl.textContent = pct + '%';
+
+  // Cor da barra por faixa de progresso
+  if (pct >= 100) {
+    fill.style.background = 'linear-gradient(90deg, #2e7d32 0%, #43a047 100%)'; // verde
+  } else if (pct >= 80) {
+    fill.style.background = 'linear-gradient(90deg, #1565c0 0%, #1e88e5 100%)'; // azul
+  } else if (pct >= 50) {
+    fill.style.background = 'linear-gradient(90deg, #e65100 0%, #fb8c00 100%)'; // laranja
+  } else if (pct >= 30) {
+    fill.style.background = 'linear-gradient(90deg, #f9a825 0%, #fdd835 100%)'; // amarelo
+  } else {
+    fill.style.background = 'linear-gradient(90deg, #b71c1c 0%, #e53935 100%)'; // vermelho
+  }
+
+  // Se pct é baixo, coloca o % dentro da barra em texto escuro pra não sumir
+  if (pctReal < 18) {
+    pctEl.style.right  = 'auto';
+    pctEl.style.left   = (pctReal + 1).toFixed(1) + '%';
+    pctEl.style.color  = 'rgba(255,255,255,0.9)';
+  } else {
+    pctEl.style.right  = '10px';
+    pctEl.style.left   = 'auto';
+    pctEl.style.color  = '#fff';
+  }
 }
 
 // ─── SOM DE CELEBRAÇÃO (Web Audio API) ───────────────────────────────────────
@@ -471,6 +633,9 @@ function poll() {
 
       const agora = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
       document.getElementById('ultimo-update').textContent = 'atualizado às ' + agora;
+
+      // Atualiza painel de objetivo a cada poll
+      atualizarObjetivo(dados);
 
       if (vendasConhecidas === null) {
         // Primeira carga: apenas memoriza, não celebra
