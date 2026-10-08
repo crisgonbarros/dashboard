@@ -436,7 +436,7 @@ function renderAll(rows, mesSelecionado){
   });
   const dias=Object.keys(diasMap).sort();
   mkChart('chartDia','line',
-    dias.map(d=>d.slice(5).replace('-','/')),
+    dias.map(d=>{ const p=d.split('-'); return p[2]+'/'+p[1]; }),
     [{label:'Vendas',data:dias.map(d=>diasMap[d]),borderColor:'#4f8ef7',backgroundColor:'rgba(79,142,247,.08)',tension:.4,fill:true,pointRadius:4,pointBackgroundColor:'#4f8ef7'}],
     {scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#6b7280',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#6b7280',font:{size:10},callback:v=>'R$'+Math.round(v/1000)+'k'}}}}
   );
@@ -458,7 +458,7 @@ function renderAll(rows, mesSelecionado){
     const [stClass,stLabel]=stMap[r.status]||['pill-gray','Aguardando'];
     const cor=COR(r.consultor);
     return `<tr>
-      <td style="color:var(--muted);font-variant-numeric:tabular-nums">${(r.data_venda||'').slice(5).replace('-','/')}</td>
+      <td style="color:var(--muted);font-variant-numeric:tabular-nums">${(function(d){const p=(d||'').split('-');return p.length===3?p[2]+'/'+p[1]:d;})(r.data_venda)}</td>
       <td style="font-weight:700;color:${COR(r.consultor)}">${r.consultor}</td>
       <td>${r.nome}</td>
       <td><span class="pill pill-blue">${prodLabel(r.curso)}</span></td>
