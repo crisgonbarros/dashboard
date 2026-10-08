@@ -41,6 +41,7 @@ main{padding:var(--pad);max-width:1400px;margin:0 auto}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px;height:100%}
 .card-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .meta-item{background:var(--bg3);border-radius:var(--rsm);padding:11px 12px;margin-bottom:8px}
 .meta-item:last-child{margin-bottom:0}
 .meta-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;gap:8px;flex-wrap:wrap}
@@ -54,6 +55,7 @@ main{padding:var(--pad);max-width:1400px;margin:0 auto}
 .kpi-badge{display:inline-block;font-size:9px;padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px;vertical-align:middle}
 .badge-green{background:rgba(34,197,94,.15);color:var(--green)}
 .badge-yellow{background:rgba(234,179,8,.15);color:var(--yellow)}
+.badge-blue{background:rgba(79,142,247,.15);color:#7eb3ff}
 .chart-wrap{position:relative;width:100%}
 .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
@@ -72,11 +74,43 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .marks-legend{display:flex;gap:16px;margin-top:12px;font-size:10px;color:var(--muted);flex-wrap:wrap}
 .marks-legend span{display:flex;align-items:center;gap:5px}
 .mline{width:14px;height:2px;border-radius:1px}
+
+/* CAMPANHA PREMIAÇÃO */
+.camp-banner{background:linear-gradient(135deg,rgba(79,142,247,.12) 0%,rgba(251,191,36,.08) 100%);border:1px solid rgba(251,191,36,.25);border-radius:var(--r);padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.camp-trophy{font-size:32px;flex-shrink:0}
+.camp-info{flex:1;min-width:200px}
+.camp-title{font-size:12px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px}
+.camp-premio{font-size:18px;font-weight:800;color:var(--text)}
+.camp-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.camp-ganhador{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:var(--rsm);padding:8px 14px;text-align:center;min-width:120px}
+.camp-ganhador-label{font-size:10px;color:var(--green);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.camp-ganhador-nome{font-size:16px;font-weight:800;color:var(--green)}
+.camp-leader{background:rgba(234,179,8,.1);border:1px solid rgba(234,179,8,.25);border-radius:var(--rsm);padding:8px 14px;text-align:center;min-width:120px}
+.camp-leader-label{font-size:10px;color:var(--yellow);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.camp-leader-nome{font-size:16px;font-weight:800;color:var(--yellow)}
+.camp-previsto{background:rgba(79,142,247,.08);border:1px solid rgba(79,142,247,.2);border-radius:var(--rsm);padding:8px 14px;text-align:center;min-width:120px}
+.camp-previsto-label{font-size:10px;color:#7eb3ff;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.camp-previsto-nome{font-size:13px;font-weight:700;color:#7eb3ff}
+
+/* RANKING MINI */
+.rank-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.rank-item{display:flex;align-items:center;gap:10px;background:var(--bg3);border-radius:var(--rsm);padding:8px 12px}
+.rank-pos{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.rank-pos-1{background:rgba(251,191,36,.2);color:#fbbf24}
+.rank-pos-2{background:rgba(148,163,184,.15);color:#94a3b8}
+.rank-pos-3{background:rgba(180,120,60,.15);color:#cd7c3a}
+.rank-pos-n{background:rgba(255,255,255,.05);color:var(--dim)}
+.rank-name{flex:1;font-weight:700;font-size:13px}
+.rank-bar-wrap{flex:2;height:4px;background:rgba(255,255,255,.07);border-radius:2px}
+.rank-bar-fill{height:100%;border-radius:2px}
+.rank-val{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;min-width:80px;text-align:right}
+
 @media(max-width:900px){
   :root{--pad:14px}
   .kpi-grid{grid-template-columns:repeat(2,1fr)}
-  .grid-2{grid-template-columns:1fr}
+  .grid-2,.grid-3{grid-template-columns:1fr}
   .kpi-value{font-size:18px}
+  .camp-banner{flex-direction:column;align-items:flex-start}
 }
 @media(max-width:560px){
   :root{--pad:12px}
@@ -86,6 +120,13 @@ tr:hover td{background:rgba(255,255,255,.02)}
   table{font-size:11px}
   td,th{padding:7px 8px}
 }
+
+/* BOTÃO REFRESH */
+.btn-refresh{background:transparent;border:1px solid var(--border2);border-radius:var(--rsm);padding:7px 10px;cursor:pointer;color:var(--muted);font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;transition:color .2s,border-color .2s;flex-shrink:0}
+.btn-refresh:hover{color:var(--accent);border-color:var(--accent)}
+.btn-refresh:active{opacity:.7}
+.btn-refresh.spinning svg{animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -98,16 +139,16 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <div class="logo-sub">Projeto IAT — Controle de Vendas 2026</div>
       </div>
     </div>
+    <button id="btnRefresh" class="btn-refresh" title="Atualizar dados" onclick="refreshDados()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M13.5 8a5.5 5.5 0 1 1-1.06-3.28"/>
+        <polyline points="14 2.5 13.5 5.5 10.5 5"/>
+      </svg>
+    </button>
   </div>
   <div class="filters">
-    <select id="selMes" onchange="onMesChange()">
-      <option value="2026-10">Outubro 2026 (S1)</option>
-      <option value="2026-09">Setembro 2026</option>
-      <option value="2026-08">Agosto 2026</option>
-      <option value="2026-07">Julho 2026</option>
-      <option value="2026-06">Junho 2026</option>
-      <option value="2026-05">Maio 2026</option>
-      <option value="2026-04">Abril 2026</option>
+    <select id="selMes" onchange="onMesChange()" disabled>
+      <option value="">Carregando...</option>
     </select>
     <select id="selConsultor" onchange="applyFilters()">
       <option value="all">Todos consultores</option>
@@ -127,7 +168,10 @@ tr:hover td{background:rgba(255,255,255,.02)}
   <span id="statusInfo" style="margin-left:auto;white-space:nowrap"></span>
 </div>
 <main>
+  <div id="campBanner" class="section"></div>
+
   <div class="kpi-grid section" id="kpiGrid"></div>
+
   <div class="section-label">Performance por consultor</div>
   <div class="grid-2 section">
     <div class="card">
@@ -143,6 +187,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="chart-wrap" style="height:240px"><canvas id="chartConsultor"></canvas></div>
     </div>
   </div>
+
   <div class="section-label">Evolução & Distribuição</div>
   <div class="grid-2 section">
     <div class="card">
@@ -155,6 +200,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="legend" id="legendProduto"></div>
     </div>
   </div>
+
   <div class="section-label">Registro de vendas</div>
   <div class="card section">
     <div class="card-title">Todas as vendas no período <span id="tableCount" style="color:var(--accent);font-weight:800;margin-left:6px"></span></div>
@@ -169,8 +215,25 @@ tr:hover td{background:rgba(255,255,255,.02)}
     </div>
   </div>
 </main>
+
 <script>
-const MESES = {"2026-04": [{"status": "validado", "data_venda": "2026-04-02", "nome": "Luiz Cesar Mantovi", "pagamento": "BOLETO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "MARINGÁ - PR", "valor_base": 6680.0, "valor_final": 5344.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-04-06", "nome": "Wellington Justino Girata", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5680.0, "valor_final": 4000.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-04-06", "nome": "Alvaneu Navarro", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5680.0, "valor_final": 5112.0, "consultor": "Jozyane"}, {"status": "validado", "data_venda": "2026-04-06", "nome": "Diego bulgarelli Grelak", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5680.0, "valor_final": 5112.0, "consultor": "Jozyane"}, {"status": "validado", "data_venda": "2026-04-06", "nome": "RENATO DA SILVA PIRES", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 6680.0, "valor_final": 5344.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-04-07", "nome": "Clayton Alves Ferreira", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE BULLDOG", "valor_base": 5680.0, "valor_final": 4544.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-04-07", "nome": "Elcio Luiz da Rosa Escobar", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5680.0, "valor_final": 4000.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-04-09", "nome": "Pedro Henrique moro", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CURITIBA", "valor_base": 5680.0, "valor_final": 5055.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-04-09", "nome": "Carlos Alberto Munhoz Junior", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "MARINGÁ - PR", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-04-10", "nome": "Ricardo Barbosa Januario", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-04-10", "nome": "Francisco Almir lobo da Silva", "pagamento": "À VISTA (PIX)", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1980.0, "valor_final": 1881.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-04-10", "nome": "Renato Moreira Peres", "pagamento": "CARTÃO", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1980.0, "valor_final": 1980.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-04-14", "nome": "Ricardo Gomes Werneck", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 6680.0, "valor_final": 6012.0, "consultor": "Jozyane"}, {"status": "validado", "data_venda": "2026-04-14", "nome": "Pedro Luciano da Silva Neto", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "MARINGÁ - PR", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-04-15", "nome": "Marcos Gomes Alves", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "JI-PARANÁ", "valor_base": 5680.0, "valor_final": 4000.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-04-16", "nome": "Renato Moreira Peres", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "JI-PARANÁ", "valor_base": 3700.0, "valor_final": 3000.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-04-16", "nome": "Amaildo Costa de Oliveira", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 2384.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-04-17", "nome": "Juvenal Marco Antônio D'Agostino", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 6680.0, "valor_final": 5678.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-04-17", "nome": "Diogo Dias Parente", "pagamento": "BOLETO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 1997.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-04-20", "nome": "Sebastião Souza da Conceição.", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "JI-PARANÁ", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-04-22", "nome": "Guilherme Rodrigues Oliveira Caldas", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-04-23", "nome": "Kelsen de Oliveira Teixeira", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 3700.0, "valor_final": 2960.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-04-23", "nome": "Mauricio de Araujo Mendonça", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 3700.0, "valor_final": 2700.0, "consultor": "Jozyane"}, {"status": "validado", "data_venda": "2026-04-23", "nome": "Samuel Andreas Hoffmann", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "MARINGÁ - PR", "valor_base": 6680.0, "valor_final": 5344.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-04-24", "nome": "Rafael Padovan", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 6680.0, "valor_final": 6680.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-04-24", "nome": "Felipe Toshio Shimohirao", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-04-24", "nome": "LUIZ FELLIPE REINER ALVES", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "PETRÓPOLIS", "valor_base": 3700.0, "valor_final": 2700.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-04-27", "nome": "Vinícius Dias Fragoso", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "MARINGÁ - PR", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-04-27", "nome": "José Aparecido da Silva Pereira", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "MARINGÁ - PR", "valor_base": 5680.0, "valor_final": 4350.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-04-27", "nome": "Raul Caldas de Mesquita Neto", "pagamento": "CARTÃO", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1980.0, "valor_final": 1980.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-04-27", "nome": "Vinicius Silva Madureira Pereira", "pagamento": "À VISTA (PIX)", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 2533.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-04-28", "nome": "Adriel Henrique Vieira da Silva", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "MARINGÁ - PR", "valor_base": 5680.0, "valor_final": 4544.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-04-29", "nome": "Wellinton cruz Machado", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Jozyane"}, {"status": "validado", "data_venda": "2026-04-29", "nome": "Mateus Martins Vasco", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-04-29", "nome": "Jales Carlindo da costa e rocha", "pagamento": "BOLETO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 2980.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-04-30", "nome": "Vinicius Antonio de Oliveira Scotton", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "CURITIBA", "valor_base": 3700.0, "valor_final": 2700.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-04-30", "nome": "Giovanny Cardoso Leite", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE BULLDOG", "valor_base": 6680.0, "valor_final": 5900.0, "consultor": "Jozyane"}, {"status": "validado", "data_venda": "2026-04-30", "nome": "Paulino Stedile Neto", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 6680.0, "valor_final": 5000.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-04-30", "nome": "Ramon Ramires oliveira santos", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "GOIÂNIA - GO", "valor_base": 6680.0, "valor_final": 5680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-04-30", "nome": "Marcos Antônio Brustolim", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 4300.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-04-30", "nome": "Marcio Vitório Debona", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CASCAVEL", "valor_base": 6680.0, "valor_final": 5000.0, "consultor": "Caren"}], "2026-05": [{"status": "validado", "data_venda": "2026-05-01", "nome": "VINÍCIUS BRAGA DIAS", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "PETRÓPOLIS", "valor_base": 3700.0, "valor_final": 2700.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-05-08", "nome": "Sandro Pereira da Silva", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-05-08", "nome": "Paola Debossan Vellozo", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 5112.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-05-08", "nome": "LUCIANO AUGUSTO VOICIK", "pagamento": "CARTÃO", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1980.0, "valor_final": 1980.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-05-14", "nome": "Mauricio Jordan", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 4827.99, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-05-15", "nome": "Gabriel De Oliveira Nantes", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-05-18", "nome": "Danillo Santos Araújo", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 2980.0, "valor_final": 1820.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-05-18", "nome": "Danillo Santos Araújo", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 3500.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-05-18", "nome": "Júlio Abreu de Souza Neto", "pagamento": "À VISTA (PIX)", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "PETRÓPOLIS", "valor_base": 6680.0, "valor_final": 5500.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-05-19", "nome": "JOSÉ MILTON MATOS CAVALCANTE", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 3860.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-05-19", "nome": "John Leno da Silva", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "SÃO PAULO - CLUBE BULLDOG", "valor_base": 2980.0, "valor_final": 1819.99, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-05-19", "nome": "Graziela de Sousa", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 3860.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-05-19", "nome": "Alessandro José Torres Rodrigues", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 4300.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-05-20", "nome": "Weberson Gomes Nogueira", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-05-20", "nome": "Cesar Augusto Braganholo", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-05-25", "nome": "Jhonatan Douglas Gonçalves do Prado", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURITIBA", "valor_base": 6680.0, "valor_final": 5800.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-05-25", "nome": "Henrique Redigolo Costa", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 6680.0, "valor_final": 6012.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-05-25", "nome": "MARIA ROSA SWIRKOVSKI", "pagamento": "CARTÃO", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1980.0, "valor_final": 1980.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-05-25", "nome": "Diogo Dias Parente", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE BULLDOG", "valor_base": 3700.0, "valor_final": 2700.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-05-25", "nome": "VANDERSON ALEXANDRE TOEPPER", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 5112.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-05-26", "nome": "Rodolfo thomé torres eiras da cruz", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 5112.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-05-26", "nome": "João Batista Piloneto", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-05-27", "nome": "Luís Carlos dresch", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5980.0, "valor_final": 5980.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-05-28", "nome": "DIOMAR ABEL DOS SANTOS", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 6680.0, "valor_final": 6680.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-05-29", "nome": "Carlos Eduardo dos Santos", "pagamento": "BOLETO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURITIBA", "valor_base": 6980.0, "valor_final": 6980.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-05-29", "nome": "Carlos Alberto Faria Barcellos Junior", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "PETRÓPOLIS", "valor_base": 3700.0, "valor_final": 3700.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-05-29", "nome": "SIMÃO SPAGNOLO LUCIAN", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "CURITIBA", "valor_base": 3860.0, "valor_final": 3600.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-05-29", "nome": "José Nunes Rios Filho", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "GOIÂNIA - GO", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-05-29", "nome": "Gabriel Tasca de Godoy", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-05-31", "nome": "Vimar Rodrigues da Siveira", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "CASCAVEL", "valor_base": 3700.0, "valor_final": 3200.0, "consultor": "Caren"}], "2026-06": [{"status": "validado", "data_venda": "2026-06-01", "nome": "Francisco das Chagas da Silva", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "SÃO PAULO - CLUBE BULLDOG", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-06-02", "nome": "Fillipe Marthos Ferreira", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 3700.0, "valor_final": 3700.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-06-02", "nome": "Hort Kosloski", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-06-02", "nome": "Trajano Pedro Irion Boschetti", "pagamento": "À VISTA (PIX)", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CHAPECÓ - SC", "valor_base": 2980.0, "valor_final": 2980.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-06-02", "nome": "Trajano Pedro Irion Boschetti", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "CHAPECÓ - SC", "valor_base": 3700.0, "valor_final": 3700.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-06-06", "nome": "Milton Luís Olegário Silva", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CURITIBA", "valor_base": 5980.0, "valor_final": 4828.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-06-10", "nome": "GUSTAVO HERON DOS SANTOS", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 6680.0, "valor_final": 6680.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-06-10", "nome": "CARLOS DOMINGUES MUNIZ", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 2831.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-06-10", "nome": "ANA STELA DOS SANTOS FIDENCIO MUNIZ", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 2831.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-06-11", "nome": "Fernando Henrique de Brito Montagner", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-06-11", "nome": "Pedro Henrique brito obara", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5980.0, "valor_final": 4500.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-06-12", "nome": "Rodrigo Celestino Freire", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-06-15", "nome": "Rafael Pereira de Souza Gomes", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 5390.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-06-17", "nome": "Ruan Medici de Oliveira", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 5000.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-06-17", "nome": "Edvaldo Marcelino Uchoa Benatti", "pagamento": "BOLETO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 29820.0, "valor_final": 1788.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-06-23", "nome": "Samuel Gomes de Souza", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "PETRÓPOLIS", "valor_base": 5980.0, "valor_final": 3680.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-06-23", "nome": "Felipe Heleno Sanches de Lima", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 6680.0, "valor_final": 5678.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-06-23", "nome": "Samuel Rodrigues Paulo de Carvalho", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5980.0, "valor_final": 5980.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-06-24", "nome": "João Pedro Andrade Modesti", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "valor_base": 5680.0, "valor_final": 5112.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-06-24", "nome": "Jonathan Patrizio Joseph Melo", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CURITIBA", "valor_base": 6680.0, "valor_final": 6680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-06-24", "nome": "Elísio Victor da Silva", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "PETRÓPOLIS", "valor_base": 4160.0, "valor_final": 4160.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-06-25", "nome": "Nathasha Benites da Silva", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CAMPO GRANDE", "valor_base": 5980.0, "valor_final": 5980.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-06-29", "nome": "Luiz Eduardo Pichurski Guerios", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-06-30", "nome": "Lucas Nadir Sobierai", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6680.0, "valor_final": 6012.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-06-30", "nome": "Fernanda Gabriela da Silva", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-06-30", "nome": "Klaiton Adair dos Santos", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-06-30", "nome": "ROGER ALMEIDA DA SILVA", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 4544.0, "consultor": "Caren"}], "2026-07": [{"status": "validado", "data_venda": "2026-07-01", "nome": "CLEITON EDSON DOS SANTOS", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 5112.0, "consultor": "Parceiro"}, {"status": "validado", "data_venda": "2026-07-01", "nome": "Elvis Ezequiel Aquino de Almeida", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1820.0, "valor_final": 1820.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-07-01", "nome": "Marcos Willian Rodrigues", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5980.0, "valor_final": 5980.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-07-02", "nome": "Bruno Silva dos Santos", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 6680.0, "valor_final": 5344.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-02", "nome": "Selma Rodrigues Ribeiro", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5980.0, "valor_final": 5980.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-07-02", "nome": "Alexandre Quasne", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1880.0, "valor_final": 1880.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-07-02", "nome": "EDILSON VENANCIO DE JESUS", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5980.0, "valor_final": 5980.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-07-03", "nome": "Gustavo Perin", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 6680.0, "valor_final": 6680.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-07-06", "nome": "Everton Francisco Bolsonello", "pagamento": "BOLETO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6980.0, "valor_final": 5933.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-07-07", "nome": "Juliano Knakiewicz", "pagamento": "BOLETO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6980.0, "valor_final": 5933.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-10", "nome": "Jeferson Demarco", "pagamento": "À VISTA (PIX)", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6680.0, "valor_final": 5344.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-11", "nome": "Richard Victor Cruz", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6680.0, "valor_final": 5678.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-13", "nome": "José Ricardo da Conceição", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "PETRÓPOLIS", "valor_base": 3700.0, "valor_final": 3500.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-13", "nome": "Carlos Victor de Mello Fernandes", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5680.0, "valor_final": 4544.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-13", "nome": "Marcelo Midaglia Resende", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5680.0, "valor_final": 4500.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-07-14", "nome": "Bárbara Gaio Nunes", "pagamento": "À VISTA (PIX)", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6680.0, "valor_final": 5450.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-14", "nome": "Fernando do Nascimento Fernandes", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 4160.0, "valor_final": 4160.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-07-15", "nome": "Glaydson Alves de Souza", "pagamento": "CARTÃO", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1980.0, "valor_final": 1980.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-07-15", "nome": "Veronica T Toaldo", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "valor_base": 5980.0, "valor_final": 4500.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-07-16", "nome": "Leandro Camargo Martins", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6680.0, "valor_final": 5678.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-16", "nome": "Antonio Sérgio Ferreira Muniz", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-16", "nome": "Ricardo de Deus Rodrigues", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2329.0, "valor_final": 1980.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-16", "nome": "Ricardo Martinho Carli", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 4200.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-07-16", "nome": "Germano Manoel Torreira Lema", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5980.0, "valor_final": 4828.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-07-20", "nome": "FLÁVIO HENRIQUE CANÇADO LIMA", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "GOIÂNIA - GO", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-07-20", "nome": "Luciano Francisco Pardini", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 5680.0, "valor_final": 4042.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-07-21", "nome": "Guilherme Roque Razori", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 6680.0, "valor_final": 5678.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-07-22", "nome": "Rosilene do Carmo Pereira Maciel", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PETRÓPOLIS", "valor_base": 5980.0, "valor_final": 4828.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-07-24", "nome": "Carlos Arlan Ramos", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 4828.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-30", "nome": "Michael Alves Cerqueira", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5980.0, "valor_final": 4828.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-07-30", "nome": "Felipe Correia Gonçalves", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 6980.0, "valor_final": 5678.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-07-31", "nome": "Jasan Dysarz Preczewski", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5980.0, "valor_final": 4828.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-07-31", "nome": "Uriel Gaddini Junior", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 6680.0, "valor_final": 5678.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-07-31", "nome": "Luan Abreu Roriz", "pagamento": "BOLETO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "GOIÂNIA - GO", "valor_base": 6980.0, "valor_final": 5678.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-31", "nome": "Cleiton Marschall", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6680.0, "valor_final": 5678.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-07-20", "nome": "Karlla Camilo Alves", "pagamento": "À VISTA (PIX)", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "GOIÂNIA - GO", "valor_base": 6680.0, "valor_final": 5974.0, "consultor": "Caren"}], "2026-08": [{"status": "validado", "data_venda": "2026-08-03", "nome": "Paulo Washington Martins da Silva", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5980.0, "valor_final": 5980.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-08-06", "nome": "Raphael Philip D Aviz dos Santos Borges", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-08-07", "nome": "Thiago Nascimento de Oliveira", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "CASCAVEL", "valor_base": 3500.0, "valor_final": 3500.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-08-07", "nome": "Fábio Rocha Ribeiro", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "GOIÂNIA - GO", "valor_base": 3700.0, "valor_final": 2700.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-08-07", "nome": "Geison Eduardo Rubert", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5980.0, "valor_final": 5112.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-08-10", "nome": "Anderson Subtil", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6420.0, "valor_final": 4500.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-08-10", "nome": "João Marcionilo dos Santos Correa Junior", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5980.0, "valor_final": 5000.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-08-10", "nome": "Rodrigo Teixeira Tambelli", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 2533.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-08-12", "nome": "Darlan Vicente Martins", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 1920.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-08-12", "nome": "Arthur Gabriel Bittencourt Martins Menegassi", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-08-12", "nome": "Afrânio Teodoro Martins", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1920.0, "valor_final": 1920.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-08-12", "nome": "Cléssion Brito de Morais", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 6420.0, "valor_final": 4500.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-08-13", "nome": "Moacir Antônio Acunha", "pagamento": "CARTÃO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 5112.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-08-14", "nome": "Renan João de Oliveira dal Magro", "pagamento": "À VISTA (PIX)", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1920.0, "valor_final": 1920.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-08-14", "nome": "Telmo da Silva", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5680.0, "valor_final": 4000.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-08-14", "nome": "Hilário Appel", "pagamento": "BOLETO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5680.0, "valor_final": 3700.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-08-14", "nome": "Diovani Tássio Guimarães Souza", "pagamento": "BOLETO", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1980.0, "valor_final": 1497.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-08-14", "nome": "Anderson Imanto Siebert", "pagamento": "BOLETO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 1920.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-08-14", "nome": "Ricardo Alves pinto", "pagamento": "BOLETO", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1980.0, "valor_final": 1497.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-08-14", "nome": "DANIEL PERRI SANTOS", "pagamento": "BOLETO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 1920.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-08-14", "nome": "Everton Moraes Santos", "pagamento": "À VISTA (PIX)", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 6920.0, "valor_final": 6920.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-08-14", "nome": "Raimundo Sebastião Rodrigues", "pagamento": "BOLETO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 1920.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-08-17", "nome": "Nielson Vieira Leite Fernandes", "pagamento": "BOLETO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1920.0, "valor_final": 1920.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-08-17", "nome": "Raimundo de Sousa Alves", "pagamento": "BOLETO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 1920.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-08-17", "nome": "Dallas Rychard dos santos Espindula", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 6680.0, "valor_final": 6680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-08-17", "nome": "José Guilherme Urbano Seixas", "pagamento": "CARTÃO", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1920.0, "valor_final": 1920.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-08-17", "nome": "Jackson Mariano Lima", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "GOIÂNIA - GO", "valor_base": 5980.0, "valor_final": 5680.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-08-18", "nome": "Antônio Carlos Torres da Silva", "pagamento": "BOLETO", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 1497.0, "valor_final": 1497.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-08-18", "nome": "Rafael Tomasi Martinazzo", "pagamento": "À VISTA (PIX)", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 6680.0, "valor_final": 6680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-08-19", "nome": "Kauan Sales Pires Barbosa", "pagamento": "À VISTA (PIX)", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5680.0, "valor_final": 5680.0, "consultor": "Paulo Enrique"}, {"status": "validado", "data_venda": "2026-08-19", "nome": "Everton Fontana", "pagamento": "BOLETO", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CHAPECÓ - SC", "valor_base": 5980.0, "valor_final": 5980.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-08-20", "nome": "ADRIANO MARTINS DA SILVA", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 5680.0, "valor_final": 4160.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-08-21", "nome": "Alex Rodrigues Luciano", "pagamento": "À VISTA (PIX)", "curso": "DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2497.0, "valor_final": 1497.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-08-21", "nome": "José Guilherme Urbano Seixas Junior", "pagamento": "À VISTA (PIX)", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "valor_base": 2980.0, "valor_final": 1920.0, "consultor": "Vitória"}, {"status": "validado", "data_venda": "2026-08-21", "nome": "Jucelio Alves de Oliveira", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 6680.0, "valor_final": 5680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-08-21", "nome": "Fabiano Gomes Duarte", "pagamento": "CARTÃO", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 6680.0, "valor_final": 5680.0, "consultor": "Caren"}, {"status": "validado", "data_venda": "2026-08-26", "nome": "Vanderlei Lazarov Aranão Gomes", "pagamento": "À VISTA (PIX)", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "valor_base": 4500.0, "valor_final": 3500.0, "consultor": "Larissa"}, {"status": "validado", "data_venda": "2026-08-31", "nome": "Lucas Flori da Silva", "pagamento": "CARTÃO", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "BAIXADA SANTISTA - SP", "valor_base": 3700.0, "valor_final": 3700.0, "consultor": "Caren"}], "2026-09": [{"data_venda": "2026-09-02", "consultor": "Caren", "nome": "Mayara Cristina Pereira dos Santos", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CASCAVEL", "pagamento": "CARTÃO", "valor_base": 6980, "valor_final": 5678, "status": "validado"}, {"data_venda": "2026-09-15", "consultor": "Caren", "nome": "Igor Walfred Natividade Fernandes", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "CARTÃO", "valor_base": 5680, "valor_final": 4828, "status": "validado"}, {"data_venda": "2026-09-28", "consultor": "Caren", "nome": "Willyan Willy da Silva dos Santos", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "BOLETO", "valor_base": 5980, "valor_final": 5980, "status": "validado"}, {"data_venda": "2026-09-30", "consultor": "Caren", "nome": "Adriano Gobi Siqueira Bueno", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "CASCAVEL", "pagamento": "CARTÃO", "valor_base": 5980, "valor_final": 4700, "status": "validado"}, {"data_venda": "2026-09-03", "consultor": "Paulo Enrique", "nome": "JORGIVAN DE SOUSA PEREIRA", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "GOIÂNIA - GO", "pagamento": "CARTÃO", "valor_base": 6980, "valor_final": 6012, "status": "validado"}, {"data_venda": "2026-09-03", "consultor": "Paulo Enrique", "nome": "Válter Ferreira Estanislau", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "pagamento": "BOLETO", "valor_base": 6980, "valor_final": 6980, "status": "validado"}, {"data_venda": "2026-09-03", "consultor": "Paulo Enrique", "nome": "Cristian Speggiorin Pietrobon", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "pagamento": "CARTÃO", "valor_base": 6980, "valor_final": 5680, "status": "validado"}, {"data_venda": "2026-09-03", "consultor": "Paulo Enrique", "nome": "DEIVID DA SILVA", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "pagamento": "CARTÃO", "valor_base": 6980, "valor_final": 5680, "status": "validado"}, {"data_venda": "2026-09-03", "consultor": "Paulo Enrique", "nome": "ISAIAS JUSTINO DE SOUZA", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "CARTÃO", "valor_base": 6980, "valor_final": 5111.95, "status": "validado"}, {"data_venda": "2026-09-30", "consultor": "Paulo Enrique", "nome": "Lossierro Alves Batista", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "BOLETO", "valor_base": 5980, "valor_final": 5681, "status": "validado"}, {"data_venda": "2026-09-03", "consultor": "Vitória", "nome": "Ivan Noetzold", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "CARTÃO", "valor_base": 5980, "valor_final": 3860, "status": "validado"}, {"data_venda": "2026-09-04", "consultor": "Vitória", "nome": "Daniel Francisco Rieth", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "CARTÃO", "valor_base": 6980, "valor_final": 5680, "status": "validado"}, {"data_venda": "2026-09-05", "consultor": "Vitória", "nome": "Ronaldo Gallinati da Silva", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "BOLETO", "valor_base": 6980, "valor_final": 5980, "status": "validado"}, {"data_venda": "2026-09-08", "consultor": "Vitória", "nome": "Marcela da Luz Marcelino", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "pagamento": "CARTÃO", "valor_base": 5980, "valor_final": 3700, "status": "validado"}, {"data_venda": "2026-09-11", "consultor": "Vitória", "nome": "Marcelo Eduardo de Arruda Schinaider", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "CARTÃO", "valor_base": 6980, "valor_final": 6420, "status": "validado"}, {"data_venda": "2026-09-16", "consultor": "Vitória", "nome": "Thiarlles Flores Reinaldo", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "pagamento": "PIX", "valor_base": 3980, "valor_final": 2700, "status": "validado"}, {"data_venda": "2026-09-23", "consultor": "Vitória", "nome": "Paulo Vinícius Coleta de Souza", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "pagamento": "PIX", "valor_base": 1980, "valor_final": 1980, "status": "validado"}, {"data_venda": "2026-09-09", "consultor": "Larissa", "nome": "ROGERIO JOSE CHIELLA", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CASCAVEL", "pagamento": "BOLETO", "valor_base": 6980, "valor_final": 6980, "status": "validado"}, {"data_venda": "2026-09-18", "consultor": "Larissa", "nome": "Roberto da Silva Franco (UDF)", "curso": "PÓS-GRADUAÇÃO EM USO DIFERENCIADO DA FORÇA", "cidade_curso": "CURSO 100% ONLINE", "pagamento": "PIX", "valor_base": 866, "valor_final": 866, "status": "validado"}, {"data_venda": "2026-09-18", "consultor": "Larissa", "nome": "Roberto da Silva Franco (Docência)", "curso": "PÓS-GRADUAÇÃO EM DOCÊNCIA EM ARMAMENTO E TIRO", "cidade_curso": "CURSO 100% ONLINE", "pagamento": "CARTÃO", "valor_base": 2980, "valor_final": 1980, "status": "validado"}, {"data_venda": "2026-09-21", "consultor": "Larissa", "nome": "Raul Paulo Silveira", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "PIX", "valor_base": 6980, "valor_final": 6980, "status": "validado"}, {"data_venda": "2026-09-24", "consultor": "Larissa", "nome": "Priscila Carrilho da Silva", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "PIX", "valor_base": 6980, "valor_final": 6000, "status": "validado"}, {"data_venda": "2026-09-28", "consultor": "Larissa", "nome": "Fabiane dos Santos Fiuza", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "CARTÃO", "valor_base": 6980, "valor_final": 6282, "status": "validado"}, {"data_venda": "2026-09-28", "consultor": "Larissa", "nome": "Raphael Gabriel Machado", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "GOIÂNIA - GO", "pagamento": "PIX", "valor_base": 5980, "valor_final": 5000, "status": "validado"}, {"data_venda": "2026-09-30", "consultor": "Larissa", "nome": "Rodrigo Silva de Araújo", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "PIX", "valor_base": 6980, "valor_final": 6000, "status": "validado"}, {"data_venda": "2026-09-15", "consultor": "Larissa", "nome": "Ivam Alves Martins", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "CASCAVEL", "pagamento": "CARTÃO", "valor_base": 6980, "valor_final": 6680, "status": "pendencia"}, {"data_venda": "2026-09-16", "consultor": "Larissa", "nome": "Paulo Henrique Pais de Andrade", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "CASCAVEL", "pagamento": "BOLETO", "valor_base": 5980, "valor_final": 5980, "status": "pendencia"}, {"data_venda": "2026-09-22", "consultor": "Larissa", "nome": "Vitório Pereira Manfreid", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "pagamento": "BOLETO", "valor_base": 3500, "valor_final": 2500, "status": "pendencia"}, {"data_venda": "2026-09-25", "consultor": "Larissa", "nome": "Jordânia Conceição Passos", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "GOIÂNIA - GO", "pagamento": "PIX", "valor_base": 5980, "valor_final": 5680, "status": "pendencia"}, {"data_venda": "2026-09-17", "consultor": "Beatris", "nome": "Alexandre Giordani Kretzmann", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "CARTÃO", "valor_base": 6980, "valor_final": 6780, "status": "validado"}, {"data_venda": "2026-09-17", "consultor": "Beatris", "nome": "Felipe Dos Santos", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "CARTÃO", "valor_base": 5980, "valor_final": 4300, "status": "validado"}], "2026-10": [{"data_venda": "2026-10-01", "consultor": "Caren", "nome": "Ubiratan Jose Goto", "curso": "PÓS + PRESENCIAL (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "pagamento": "CARTÃO", "valor_base": 6680, "valor_final": 5678, "status": "validado"}, {"data_venda": "2026-10-01", "consultor": "Vitória", "nome": "Alexandre Borges Macedo", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "CARTÃO", "valor_base": 5980, "valor_final": 5680, "status": "validado"}, {"data_venda": "2026-10-05", "consultor": "Larissa", "nome": "Davi Augusto de Moraes Silva", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "pagamento": "PIX", "valor_base": 5980, "valor_final": 5382, "status": "validado"}, {"data_venda": "2026-10-06", "consultor": "Caren", "nome": "Celso Laufer Rossato", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "CARTÃO", "valor_base": 5680, "valor_final": 5112, "status": "validado"}, {"data_venda": "2026-10-06", "consultor": "Vitória", "nome": "Rafael Augusto Polidoro", "curso": "FORMAÇÃO IAT (HÍBRIDO)", "cidade_curso": "PORTO ALEGRE", "pagamento": "PIX", "valor_base": 5980, "valor_final": 5328, "status": "validado"}, {"data_venda": "2026-10-06", "consultor": "Paulo Enrique", "nome": "José Antonio Godinho da Mota", "curso": "APENAS COMPLEMENTAÇÃO PRESENCIAL", "cidade_curso": "SÃO PAULO - CLUBE MAIRIPORÃ", "pagamento": "CARTÃO", "valor_base": 4500, "valor_final": 3500, "status": "nao_conferido"}]};
+// URL do Apps Script Web App (atualiza automaticamente da planilha Google Sheets)
+const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbx5wlWgYNW0E3-YZNeAVqDTPwLZfSNmxvsuYEAL3Zl1ob0uZbQna9kHmTPl8KTdPWPpyQ/exec';
+let MESES = {};  // será populado via fetch()
+
+// ── Nomes dos meses em português ─────────────────────────────────────────────
+const NOME_MES = {
+  '01':'Janeiro','02':'Fevereiro','03':'Março','04':'Abril',
+  '05':'Maio','06':'Junho','07':'Julho','08':'Agosto',
+  '09':'Setembro','10':'Outubro','11':'Novembro','12':'Dezembro'
+};
+function labelMes(chave){
+  const [ano, mm] = chave.split('-');
+  return (NOME_MES[mm]||mm) + ' ' + ano;
+}
+
+
+const PREMIOS = {"2026-04": {"premio": null, "ganhador": null, "status": "encerrado"}, "2026-05": {"premio": null, "ganhador": null, "status": "encerrado"}, "2026-06": {"premio": null, "ganhador": null, "status": "encerrado"}, "2026-07": {"premio": null, "ganhador": null, "status": "encerrado"}, "2026-08": {"premio": null, "ganhador": null, "status": "encerrado"}, "2026-09": {"premio": "Fone JBL Tune 500BT", "ganhador": "Larissa", "status": "encerrado"}, "2026-10": {"premio": "Echo Dot 5ª Geração (Alexa)", "ganhador": null, "status": "em_andamento"}, "2026-11": {"premio": "AirPods (a confirmar)", "ganhador": null, "status": "previsto"}};
 
 const COR = {
   'Vitória':'#4f8ef7','Caren':'#34d399','Larissa':'#fbbf24',
@@ -190,6 +253,51 @@ function prodLabel(s){
   if(s.includes('FORMAÇÃO IAT')) return 'Formação Híbrido';
   if(s.includes('TÉCNICO')) return 'Técnico';
   return s.slice(0,25);
+}
+
+function renderCampanha(mes, rows){
+  const p = PREMIOS[mes];
+  const banner = document.getElementById('campBanner');
+  if(!p || !p.premio){ banner.innerHTML=''; return; }
+
+  // Calcular líder atual (mais vendas no mês)
+  const cMap={};
+  rows.filter(r=>r.status==='validado'||r.status==='pendencia').forEach(r=>{
+    cMap[r.consultor]=(cMap[r.consultor]||0)+(r.valor_final||0);
+  });
+  const lider = Object.keys(cMap).sort((a,b)=>cMap[b]-cMap[a])[0];
+  const liderVal = cMap[lider]||0;
+
+  let direita = '';
+  if(p.status === 'encerrado' && p.ganhador){
+    direita = `<div class="camp-ganhador">
+      <div class="camp-ganhador-label">🏆 Vencedor</div>
+      <div class="camp-ganhador-nome">${p.ganhador}</div>
+    </div>`;
+  } else if(p.status === 'em_andamento' && lider){
+    direita = `<div class="camp-leader">
+      <div class="camp-leader-label">🥇 Liderando</div>
+      <div class="camp-leader-nome">${lider} (${fmt(liderVal)})</div>
+    </div>`;
+  } else if(p.status === 'previsto'){
+    direita = `<div class="camp-previsto">
+      <div class="camp-previsto-label">📅 Próximo mês</div>
+      <div class="camp-previsto-nome">Novembro 2026</div>
+    </div>`;
+  }
+
+  const statusLabel = {encerrado:'Encerrada ✓', em_andamento:'Em andamento', previsto:'Prevista'}[p.status]||'';
+  const statusClass = {encerrado:'badge-green', em_andamento:'badge-yellow', previsto:'badge-blue'}[p.status]||'';
+
+  banner.innerHTML = `<div class="camp-banner">
+    <div class="camp-trophy">🎁</div>
+    <div class="camp-info">
+      <div class="camp-title">Campanha de Premiação Mensal <span class="kpi-badge ${statusClass}">${statusLabel}</span></div>
+      <div class="camp-premio">${p.premio}</div>
+      <div class="camp-sub">Prêmio para o consultor com mais vendas no mês</div>
+    </div>
+    ${direita}
+  </div>`;
 }
 
 function onMesChange(){
@@ -221,6 +329,7 @@ function applyFilters(){
   const produto = document.getElementById('selProduto').value;
   const cidade = document.getElementById('selCidade').value;
   let rows = MESES[mes]||[];
+  renderCampanha(mes, rows);
   if(consultor!=='all') rows=rows.filter(r=>r.consultor===consultor);
   if(produto!=='all')   rows=rows.filter(r=>r.curso===produto);
   if(cidade!=='all')    rows=rows.filter(r=>r.cidade_curso===cidade);
@@ -317,7 +426,7 @@ function renderAll(rows){
   const pKeys=Object.keys(pMap).sort((a,b)=>pMap[b]-pMap[a]);
   mkChart('chartProduto','doughnut',pKeys,
     [{data:pKeys.map(k=>pMap[k]),backgroundColor:PALETTE.slice(0,pKeys.length),borderWidth:1,borderColor:'#141720'}],
-    {},'legendProduto',pKeys.map((k,i)=>({label:`${k}: ${fmt(pMap[k])}`,color:PALETTE[i]}))
+    {},'legendProduto',pKeys.map((k,i)=>{return {label:`${k}: ${fmt(pMap[k])}`,color:PALETTE[i]}})
   );
 
   // TABELA
@@ -361,7 +470,128 @@ function mkChart(id,type,labels,datasets,extraOpts,legendId,legendItems){
   }
 }
 
-(function(){ onMesChange(); })();
+// ── Inicialização: busca dados da planilha via Apps Script Web App ────────────
+(function(){
+  const selMes = document.getElementById('selMes');
+  const mainEl = document.querySelector('main');
+
+  // Indicador de carregamento
+  function showLoading(){
+    const loader = document.createElement('div');
+    loader.id = 'loadingOverlay';
+    loader.style.cssText = [
+      'position:fixed','top:0','left:0','width:100%','height:100%',
+      'background:rgba(15,20,30,0.82)','display:flex','flex-direction:column',
+      'align-items:center','justify-content:center','z-index:9999','gap:16px'
+    ].join(';');
+    loader.innerHTML = `
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="20" stroke="#334155" stroke-width="4"/>
+        <path d="M24 4 a20 20 0 0 1 20 20" stroke="#4f8ef7" stroke-width="4" stroke-linecap="round">
+          <animateTransform attributeName="transform" type="rotate"
+            from="0 24 24" to="360 24 24" dur="0.9s" repeatCount="indefinite"/>
+        </path>
+      </svg>
+      <span style="color:#94a3b8;font-size:14px;font-family:system-ui">Carregando dados da planilha…</span>`;
+    document.body.appendChild(loader);
+  }
+
+  function hideLoading(){
+    const el = document.getElementById('loadingOverlay');
+    if(el) el.remove();
+  }
+
+  function showError(msg){
+    hideLoading();
+    const err = document.createElement('div');
+    err.style.cssText = [
+      'position:fixed','top:20px','left:50%','transform:translateX(-50%)',
+      'background:#7f1d1d','color:#fca5a5','padding:14px 24px','border-radius:10px',
+      'font-size:14px','z-index:9999','max-width:480px','text-align:center',
+      'box-shadow:0 4px 24px rgba(0,0,0,0.5)'
+    ].join(';');
+    err.innerHTML = `<strong>Erro ao carregar dados</strong><br>${msg}<br>
+      <small style="opacity:.7">Verifique a conexão e recarregue a página.</small>`;
+    document.body.appendChild(err);
+    // Permite fechar clicando
+    err.addEventListener('click', ()=>err.remove());
+  }
+
+  // Popula o seletor de meses dinamicamente com os dados recebidos
+  function popularSeletor(chaves){
+    selMes.innerHTML = '';
+    // Ordena decrescente (mais recente primeiro)
+    chaves.sort((a,b)=>b.localeCompare(a)).forEach(function(chave){
+      const opt = document.createElement('option');
+      opt.value = chave;
+      opt.textContent = labelMes(chave);
+      selMes.appendChild(opt);
+    });
+    selMes.disabled = false;
+    // Seleciona o mês mais recente por padrão
+    selMes.selectedIndex = 0;
+  }
+
+  // ── Função central de fetch (usada no load inicial, botão e auto-refresh) ────
+  function refreshDados(isManual){
+    const btn = document.getElementById('btnRefresh');
+    if(btn) btn.classList.add('spinning');
+
+    // Mostra overlay de loading apenas no carregamento inicial
+    if(isManual === undefined) showLoading();
+
+    fetch(WEBAPP_URL)
+      .then(function(res){
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function(dados){
+        if(dados && dados.error){
+          throw new Error(dados.message || 'Erro no servidor');
+        }
+
+        const mesSelecionado = selMes.value; // preserva seleção atual do usuário
+        MESES = dados;
+
+        const chaves = Object.keys(MESES);
+        if(chaves.length === 0){
+          throw new Error('Nenhum dado retornado pela planilha.');
+        }
+
+        popularSeletor(chaves);
+
+        // Restaura o mês que o usuário estava vendo, se ainda existir
+        if(mesSelecionado && MESES[mesSelecionado]){
+          selMes.value = mesSelecionado;
+        }
+
+        hideLoading();
+        if(btn){ btn.classList.remove('spinning'); }
+
+        // Atualiza barra de status
+        const info = document.getElementById('statusInfo');
+        if(info){
+          const agora = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+          info.textContent = '⟳ Atualizado às ' + agora;
+        }
+
+        onMesChange();
+      })
+      .catch(function(err){
+        console.error('Erro ao buscar dados IAT:', err);
+        if(btn) btn.classList.remove('spinning');
+        showError(err.message || String(err));
+      });
+  }
+
+  // Carregamento inicial
+  showLoading();
+  refreshDados();
+
+  // Auto-refresh a cada 120 segundos (silencioso, sem overlay)
+  setInterval(function(){ refreshDados(true); }, 120 * 1000);
+
+})();
 </script>
 </body>
 </html>
