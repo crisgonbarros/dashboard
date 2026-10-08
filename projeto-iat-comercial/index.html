@@ -121,6 +121,9 @@ tr:hover td{background:rgba(255,255,255,.02)}
   td,th{padding:7px 8px}
 }
 
+/* SHIMMER SKELETON */
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
 /* BOTÃO REFRESH */
 .btn-refresh{background:transparent;border:1px solid var(--border2);border-radius:var(--rsm);padding:7px 10px;cursor:pointer;color:var(--muted);font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;transition:color .2s,border-color .2s;flex-shrink:0}
 .btn-refresh:hover{color:var(--accent);border-color:var(--accent)}
@@ -191,7 +194,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
   <div class="section-label">Evolução & Distribuição</div>
   <div class="grid-2 section">
     <div class="card">
-      <div class="card-title">Vendas por dia (R$)</div>
+      <div class="card-title">Vendas por dia (R$) <span id="chartDiaMes" style="color:var(--accent);font-weight:800;margin-left:6px"></span></div>
       <div class="chart-wrap" style="height:200px"><canvas id="chartDia"></canvas></div>
     </div>
     <div class="card">
@@ -235,10 +238,14 @@ function labelMes(chave){
 
 const PREMIOS = {"2026-04": {"premio": null, "ganhador": null, "status": "encerrado"}, "2026-05": {"premio": null, "ganhador": null, "status": "encerrado"}, "2026-06": {"premio": null, "ganhador": null, "status": "encerrado"}, "2026-07": {"premio": null, "ganhador": null, "status": "encerrado"}, "2026-08": {"premio": null, "ganhador": null, "status": "encerrado"}, "2026-09": {"premio": "Fone JBL Tune 500BT", "ganhador": "Larissa", "status": "encerrado"}, "2026-10": {"premio": "Echo Dot 5ª Geração (Alexa)", "ganhador": null, "status": "em_andamento"}, "2026-11": {"premio": "AirPods (a confirmar)", "ganhador": null, "status": "previsto"}};
 
-const COR = {
-  'Vitória':'#4f8ef7','Caren':'#34d399','Larissa':'#fbbf24',
-  'Paulo Enrique':'#a78bfa','Beatris':'#fb923c','Jozyane':'#f87171','Parceiro':'#94a3b8'
+const COR_RAW = {
+  'vitoria':'#4f8ef7','caren':'#34d399','larissa':'#fbbf24',
+  'paulo enrique':'#a78bfa','beatris':'#fb923c','jozyane':'#f87171','parceiro':'#94a3b8',
+  'venda direta (piat)':'#f472b6','venda direta':'#f472b6'
 };
+// Normaliza string: minúsculo + remove acentos
+function normStr(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); }
+function COR(nome){ return COR_RAW[normStr(nome)] || '#94a3b8'; }
 const PALETTE = ['#4f8ef7','#34d399','#fbbf24','#a78bfa','#fb923c','#f87171','#94a3b8'];
 const META_BASE = 30000, META_IDEAL = 60000;
 let CHARTS = {};
@@ -333,10 +340,10 @@ function applyFilters(){
   if(consultor!=='all') rows=rows.filter(r=>r.consultor===consultor);
   if(produto!=='all')   rows=rows.filter(r=>r.curso===produto);
   if(cidade!=='all')    rows=rows.filter(r=>r.cidade_curso===cidade);
-  renderAll(rows);
+  renderAll(rows, mes);
 }
 
-function renderAll(rows){
+function renderAll(rows, mesSelecionado){
   const valid = rows.filter(r=>!r.cancelado);
   const nVal=rows.filter(r=>r.status==='validado').length;
   const nPend=rows.filter(r=>r.status==='pendencia').length;
@@ -376,7 +383,7 @@ function renderAll(rows){
     const tot = valid.filter(r=>r.consultor===c).reduce((s,r)=>s+(r.valor_final||0),0);
     const vendas = valid.filter(r=>r.consultor===c).length;
     const pct = Math.min(tot/META_IDEAL*100,100);
-    const cor = COR[c]||'#94a3b8';
+    const cor = COR(c);
     let badge = '';
     if(tot>=META_IDEAL) badge='<span class="kpi-badge badge-green">IDEAL ✓</span>';
     else if(tot>=META_BASE) badge='<span class="kpi-badge badge-yellow">BASE ✓</span>';
@@ -406,13 +413,21 @@ function renderAll(rows){
   valid.forEach(r=>{cMap[r.consultor]=(cMap[r.consultor]||0)+(r.valor_final||0);});
   const cKeys=Object.keys(cMap).sort((a,b)=>cMap[b]-cMap[a]);
   mkChart('chartConsultor','bar',cKeys,
-    [{data:cKeys.map(c=>cMap[c]),backgroundColor:cKeys.map(c=>COR[c]||'#94a3b8'),borderRadius:4,borderSkipped:'bottom'}],
+    [{data:cKeys.map(c=>cMap[c]),backgroundColor:cKeys.map(c=>COR(c)),borderRadius:4,borderSkipped:'bottom'}],
     {indexAxis:'y',scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#6b7280',font:{size:10},callback:v=>'R$'+Math.round(v/1000)+'k'}},y:{grid:{display:false},ticks:{color:'#e8eaf0',font:{size:12,weight:'600'}}}}}
   );
 
-  // CHART DIA
+  // Atualiza label do mês no título do gráfico de dias
+  const chartDiaMesEl = document.getElementById('chartDiaMes');
+  if(chartDiaMesEl && mesSelecionado) chartDiaMesEl.textContent = '— ' + labelMes(mesSelecionado);
+
+  // CHART DIA — filtra apenas datas do mês selecionado para evitar cruzamento
   const diasMap={};
-  valid.forEach(r=>{diasMap[r.data_venda]=(diasMap[r.data_venda]||0)+(r.valor_final||0);});
+  valid.forEach(r=>{
+    if(!mesSelecionado || (r.data_venda||'').startsWith(mesSelecionado)){
+      diasMap[r.data_venda]=(diasMap[r.data_venda]||0)+(r.valor_final||0);
+    }
+  });
   const dias=Object.keys(diasMap).sort();
   mkChart('chartDia','line',
     dias.map(d=>d.slice(5).replace('-','/')),
@@ -435,10 +450,10 @@ function renderAll(rows){
   document.getElementById('tableBody').innerHTML=sorted.map(r=>{
     const stMap={validado:['pill-green','Validado'],pendencia:['pill-yellow','Pendência'],nao_conferido:['pill-gray','Aguardando']};
     const [stClass,stLabel]=stMap[r.status]||['pill-gray','Aguardando'];
-    const cor=COR[r.consultor]||'#94a3b8';
+    const cor=COR(r.consultor);
     return `<tr>
       <td style="color:var(--muted);font-variant-numeric:tabular-nums">${(r.data_venda||'').slice(5).replace('-','/')}</td>
-      <td style="font-weight:700;color:${cor}">${r.consultor}</td>
+      <td style="font-weight:700;color:${COR(r.consultor)}">${r.consultor}</td>
       <td>${r.nome}</td>
       <td><span class="pill pill-blue">${prodLabel(r.curso)}</span></td>
       <td style="color:var(--muted);font-size:11px;white-space:nowrap">${r.cidade_curso||''}</td>
@@ -475,31 +490,49 @@ function mkChart(id,type,labels,datasets,extraOpts,legendId,legendItems){
   const selMes = document.getElementById('selMes');
   const mainEl = document.querySelector('main');
 
-  // Indicador de carregamento
+  // ── Skeleton loading ─────────────────────────────────────────────────────────
+  function showSkeleton(){
+    // Injeta placeholders shimmer onde ficarão os dados reais
+    document.getElementById('campBanner').innerHTML = skBox('100%','72px');
+    document.getElementById('kpiGrid').innerHTML = [1,2,3,4].map(()=>`
+      <div class="kpi" style="--kpi-color:#1e2a3a">
+        ${skBox('60%','10px','0 0 8px')}${skBox('45%','24px','6px 0 4px')}${skBox('35%','9px')}
+      </div>`).join('');
+    document.getElementById('metaRow').innerHTML = [1,2,3].map(()=>`
+      <div class="meta-item">${skBox('70%','13px','0 0 10px')}${skBox('100%','5px')}</div>`).join('');
+    ['tableBody'].forEach(id=>{
+      document.getElementById(id).innerHTML = [1,2,3,4,5].map(()=>`
+        <tr>${[1,2,3,4,5,6,7,8].map(()=>`<td>${skBox('80%','11px')}</td>`).join('')}</tr>`).join('');
+    });
+  }
+
+  function skBox(w,h,margin){
+    return `<div style="width:${w};height:${h};background:linear-gradient(90deg,#1c2030 25%,#242a3a 50%,#1c2030 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:4px;margin:${margin||'0'}"></div>`;
+  }
+
+  // Mensagem de progresso no canto inferior
+  let _loadMsg = null;
+  function setLoadMsg(txt){
+    if(!_loadMsg){
+      _loadMsg = document.createElement('div');
+      _loadMsg.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#1c2030;border:1px solid rgba(79,142,247,.3);color:#7eb3ff;font-size:12px;padding:10px 16px;border-radius:8px;z-index:9999;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,.4)';
+      _loadMsg.innerHTML = '<svg width="14" height="14" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#334155" stroke-width="5"/><path d="M24 4 a20 20 0 0 1 20 20" stroke="#4f8ef7" stroke-width="5" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="0.9s" repeatCount="indefinite"/></path></svg><span id="_loadTxt"></span>';
+      document.body.appendChild(_loadMsg);
+    }
+    document.getElementById('_loadTxt').textContent = txt;
+  }
+  function hideLoadMsg(){
+    if(_loadMsg){ _loadMsg.remove(); _loadMsg = null; }
+  }
+
   function showLoading(){
-    const loader = document.createElement('div');
-    loader.id = 'loadingOverlay';
-    loader.style.cssText = [
-      'position:fixed','top:0','left:0','width:100%','height:100%',
-      'background:rgba(15,20,30,0.82)','display:flex','flex-direction:column',
-      'align-items:center','justify-content:center','z-index:9999','gap:16px'
-    ].join(';');
-    loader.innerHTML = `
-      <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-        <circle cx="24" cy="24" r="20" stroke="#334155" stroke-width="4"/>
-        <path d="M24 4 a20 20 0 0 1 20 20" stroke="#4f8ef7" stroke-width="4" stroke-linecap="round">
-          <animateTransform attributeName="transform" type="rotate"
-            from="0 24 24" to="360 24 24" dur="0.9s" repeatCount="indefinite"/>
-        </path>
-      </svg>
-      <span style="color:#e8eaf0;font-size:15px;font-weight:700;font-family:system-ui">Carregando dados do sistema</span>
-      <span style="color:#6b7280;font-size:12px;font-family:system-ui">Isso pode levar alguns instantes. Aguarde…</span>`;
-    document.body.appendChild(loader);
+    showSkeleton();
+    setLoadMsg('Conectando ao servidor…');
   }
 
   function hideLoading(){
-    const el = document.getElementById('loadingOverlay');
-    if(el) el.remove();
+    // O skeleton some sozinho quando renderAll() sobrescreve o conteúdo
+    hideLoadMsg();
   }
 
   function showError(msg){
@@ -533,15 +566,38 @@ function mkChart(id,type,labels,datasets,extraOpts,legendId,legendItems){
     selMes.selectedIndex = 0;
   }
 
+  // ── Fetch com timeout e retry ─────────────────────────────────────────────────
+  function fetchComTimeout(url, ms){
+    return new Promise(function(resolve, reject){
+      const ctrl = new AbortController();
+      const timer = setTimeout(function(){ ctrl.abort(); }, ms);
+      fetch(url, {cache:'no-store', signal:ctrl.signal})
+        .then(function(r){ clearTimeout(timer); resolve(r); })
+        .catch(function(e){ clearTimeout(timer); reject(e); });
+    });
+  }
+
   // ── Função central de fetch (usada no load inicial, botão e auto-refresh) ────
-  function refreshDados(isManual){
+  // isManual=true  → refresh via botão (silencioso, sem overlay)
+  // isManual=undefined → carregamento inicial (mostra overlay)
+  // isManual='auto' → auto-refresh (silencioso, erros não mostram pop-up permanente)
+  function refreshDados(isManual, tentativa){
+    tentativa = tentativa || 1;
     const btn = document.getElementById('btnRefresh');
     if(btn) btn.classList.add('spinning');
 
-    // Mostra overlay de loading apenas no carregamento inicial
+    // Mostra skeleton + mensagem apenas no carregamento inicial
     if(isManual === undefined) showLoading();
 
-    fetch(WEBAPP_URL)
+    if(isManual === undefined){
+      if(tentativa === 1) setLoadMsg('Conectando ao servidor…');
+      else setLoadMsg('Tentativa ' + tentativa + '/3 — Aguardando planilha…');
+      // Atualiza a mensagem após 5s para indicar que ainda está processando
+      setTimeout(function(){ if(_loadMsg) setLoadMsg('Processando dados da planilha…'); }, 5000);
+      setTimeout(function(){ if(_loadMsg) setLoadMsg('Quase lá, pode demorar até 20s na primeira vez…'); }, 12000);
+    }
+
+    fetchComTimeout(WEBAPP_URL, 25000)
       .then(function(res){
         if(!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();
@@ -579,9 +635,31 @@ function mkChart(id,type,labels,datasets,extraOpts,legendId,legendItems){
         onMesChange();
       })
       .catch(function(err){
-        console.error('Erro ao buscar dados IAT:', err);
+        console.error('Erro ao buscar dados IAT (tentativa '+tentativa+'):', err);
         if(btn) btn.classList.remove('spinning');
-        showError(err.message || String(err));
+
+        // Auto-refresh silencioso: não mostra pop-up permanente
+        if(isManual === 'auto'){
+          const info = document.getElementById('statusInfo');
+          if(info){
+            const agora = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+            info.textContent = '⚠ Falha ao atualizar às ' + agora + ' — tentará novamente';
+          }
+          return;
+        }
+
+        // Carregamento inicial: tenta até 3 vezes com intervalo crescente
+        if(isManual === undefined && tentativa < 3){
+          const espera = tentativa * 4000; // 4s, 8s
+          setLoadMsg('Sem resposta. Retentando em ' + (espera/1000) + 's…');
+          setTimeout(function(){ refreshDados(undefined, tentativa + 1); }, espera);
+          return;
+        }
+
+        hideLoadMsg();
+        showError(err.name === 'AbortError'
+          ? 'O servidor demorou demais para responder. Tente novamente.'
+          : (err.message || String(err)));
       });
   }
 
@@ -589,8 +667,8 @@ function mkChart(id,type,labels,datasets,extraOpts,legendId,legendItems){
   showLoading();
   refreshDados();
 
-  // Auto-refresh a cada 120 segundos (silencioso, sem overlay)
-  setInterval(function(){ refreshDados(true); }, 120 * 1000);
+  // Auto-refresh a cada 120 segundos (silencioso, sem overlay, sem pop-up de erro)
+  setInterval(function(){ refreshDados('auto'); }, 120 * 1000);
 
 })();
 </script>
