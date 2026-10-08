@@ -28,6 +28,56 @@ html, body {
   background: rgba(5, 3, 4, 0.45);
 }
 
+/* ── REFLEXO DE LUZ (movimento leve de espera) ── */
+#reflexo-luz {
+  position: fixed; inset: 0; z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+#reflexo-luz::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -60%;
+  width: 40%;
+  height: 300%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.03) 45%,
+    rgba(255, 255, 255, 0.07) 50%,
+    rgba(255, 255, 255, 0.03) 55%,
+    transparent 70%
+  );
+  transform: skewX(-15deg);
+  animation: reflexo-passar 8s ease-in-out infinite;
+}
+#reflexo-luz::after {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: -60%;
+  width: 20%;
+  height: 300%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.015) 45%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.015) 55%,
+    transparent 70%
+  );
+  transform: skewX(-15deg);
+  animation: reflexo-passar 8s ease-in-out 1.2s infinite;
+}
+@keyframes reflexo-passar {
+  0%   { left: -60%; opacity: 0; }
+  5%   { opacity: 1; }
+  60%  { opacity: 1; }
+  80%  { left: 130%; opacity: 0; }
+  100% { left: 130%; opacity: 0; }
+}
+
 /* ── FLASH DE CELEBRAÇÃO ── */
 #flash {
   position: fixed; inset: 0; z-index: 5;
@@ -439,6 +489,9 @@ html, body {
 <!-- Gradientes de contraste nos cantos inferiores -->
 <div id="gradient-clock"></div>
 <div id="gradient-goal"></div>
+
+<!-- Reflexo de luz -->
+<div id="reflexo-luz"></div>
 
 <!-- Glow pulsando sobre a logo (tela de espera) -->
 <div id="logo-glow"></div>
