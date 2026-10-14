@@ -410,6 +410,42 @@ html, body {
   text-shadow: 0 0 30px rgba(229,57,53,0.6);
 }
 
+/* ── FOTO DO CONSULTOR ── */
+.consultor-foto-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 0;
+}
+.consultor-foto {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  border: 2px solid rgba(229,57,53,0.6);
+  object-fit: cover;
+  background: rgba(229,57,53,0.12);
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(229,57,53,0.3);
+}
+.consultor-foto-fallback {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  border: 2px solid rgba(229,57,53,0.6);
+  background: rgba(229,57,53,0.15);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  font-weight: 900;
+  color: rgba(229,57,53,0.8);
+  text-transform: uppercase;
+}
+/* Versão menor para card de última venda */
+.consultor-foto.pequena,
+.consultor-foto-fallback.pequena {
+  width: 52px; height: 52px;
+  font-size: 20px;
+}
+
 /* borda piscando no card durante celebração */
 @keyframes border-pulse {
   0%, 100% { border-color: rgba(220,30,30,0.7); box-shadow: 0 0 0 1px rgba(220,30,30,0.2), 0 0 80px rgba(220,30,30,0.35), 0 32px 80px rgba(0,0,0,0.7); }
@@ -482,7 +518,7 @@ html, body {
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.3);
-  margin-bottom: 6px;
+  margin-bottom: 10px;
 }
 #ultima-consultor-nome {
   font-size: clamp(24px, 4vw, 38px);
@@ -660,7 +696,10 @@ html, body {
     <div id="ultima-label">venda confirmada</div>
     <div id="ultima-divider"></div>
     <div id="ultima-consultor-label">Consultor</div>
-    <div id="ultima-consultor-nome">—</div>
+    <div class="consultor-foto-wrap">
+      <div id="ultima-consultor-foto-wrap"></div>
+      <div id="ultima-consultor-nome">—</div>
+    </div>
   </div>
 </div>
 
@@ -673,7 +712,10 @@ html, body {
     <div id="card-label-venda">venda confirmada</div>
     <div id="card-divider"></div>
     <div id="card-consultor-label">Consultor</div>
-    <div id="card-consultor-nome">—</div>
+    <div class="consultor-foto-wrap">
+      <div id="card-consultor-foto-wrap"></div>
+      <div id="card-consultor-nome">—</div>
+    </div>
   </div>
 </div>
 
@@ -690,6 +732,34 @@ const WEBAPP_URL    = 'https://script.google.com/macros/s/AKfycbx5wlWgYNW0E3-YZN
 const POLL_INTERVAL = 20 * 1000;   // 20 segundos
 const CARD_DURACAO  = 20 * 1000;   // card de celebração visível por 20 segundos
 const META_MES      = 150000;      // Objetivo do mês em R$
+
+// Consultores do time comercial — Parceiro / Venda Direta / vazio são ignorados
+// no somatório do objetivo e não têm foto
+const CONSULTORES_TIME = ['beatris', 'caren', 'jozyane', 'larissa', 'paulo enrique', 'vitória', 'vitoria'];
+
+// Retorna true se o consultor pertence ao time comercial
+function ehConsultorTime(nome) {
+  if (!nome) return false;
+  const n = nome.trim().toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '');
+  // Ignora "parceiro", "venda direta" e variações
+  if (!n || n === 'parceiro' || n.indexOf('venda') !== -1) return false;
+  return true;
+}
+
+// Converte nome do consultor para slug do arquivo de foto
+// Ex: "Paulo Enrique" → "paulo-enrique", "Vitória" → "vitoria"
+function consultorSlug(nome) {
+  return nome.trim().toLowerCase()
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/\s+/g, '-');
+}
+
+// Caminho da foto do consultor (relativo ao monitor.html)
+const FOTO_BASE = 'img/consultores/';
+function fotoConsultor(nome) {
+  return FOTO_BASE + consultorSlug(nome) + '.webp';
+}
 
 // ─── CONTEXTO DE ÁUDIO ───────────────────────────────────────────────────────
 let audioCtx = null;
@@ -767,7 +837,9 @@ function atualizarObjetivo(dados) {
   const agora    = new Date();
   const mesAtual = agora.getFullYear() + '-' + String(agora.getMonth() + 1).padStart(2, '0');
 
-  const vendasMes = dados[mesAtual] || [];
+  const vendasMes = (dados[mesAtual] || []).filter(function(v) {
+    return ehConsultorTime(v.consultor);
+  });
   const totalMes  = vendasMes.reduce(function(acc, v) {
     return acc + (parseFloat(v.valor_final) || 0);
   }, 0);
@@ -805,11 +877,41 @@ function atualizarObjetivo(dados) {
   }
 }
 
+// ─── FOTO DO CONSULTOR ───────────────────────────────────────────────────────
+// Cria elemento <img> com fallback para círculo com inicial
+function criarElementoFoto(nome, pequena) {
+  const wrapId = pequena ? 'ultima-consultor-foto-wrap' : 'card-consultor-foto-wrap';
+  const wrap = document.getElementById(wrapId);
+  if (!wrap) return;
+  wrap.innerHTML = '';
+
+  if (!ehConsultorTime(nome)) return; // Parceiro/Venda Direta: sem foto
+
+  const cls = pequena ? 'pequena' : '';
+
+  const img = document.createElement('img');
+  img.src = fotoConsultor(nome);
+  img.className = 'consultor-foto' + (cls ? ' ' + cls : '');
+  img.alt = nome;
+
+  // Se a imagem não carregar, substitui pelo fallback com inicial
+  img.onerror = function() {
+    const fb = document.createElement('div');
+    fb.className = 'consultor-foto-fallback' + (cls ? ' ' + cls : '');
+    fb.textContent = nome.trim().charAt(0).toUpperCase();
+    wrap.innerHTML = '';
+    wrap.appendChild(fb);
+  };
+
+  wrap.appendChild(img);
+}
+
 // ─── ATUALIZAR CARD ÚLTIMA VENDA ─────────────────────────────────────────────
 function mostrarUltimaVenda(venda) {
   if (!venda) return;
-  document.getElementById('ultima-valor').textContent       = fmtValor(venda.valor_final);
+  document.getElementById('ultima-valor').textContent          = fmtValor(venda.valor_final);
   document.getElementById('ultima-consultor-nome').textContent = venda.consultor || 'Consultor';
+  criarElementoFoto(venda.consultor || '', true);
 
   const card = document.getElementById('card-ultima');
   card.classList.add('show');
@@ -1003,8 +1105,9 @@ function celebrar(venda) {
   ativarOverlayEscuro();
 
   // Preenche o card de celebração
-  document.getElementById('card-valor').textContent         = fmtValor(venda.valor_final);
+  document.getElementById('card-valor').textContent          = fmtValor(venda.valor_final);
   document.getElementById('card-consultor-nome').textContent = venda.consultor || 'Consultor';
+  criarElementoFoto(venda.consultor || '', false);
 
   // Mostra card
   const cardEl = document.getElementById('card-venda');
@@ -1075,7 +1178,7 @@ function poll() {
         // Define a última venda do mês como "última venda" no card central
         const mesAtual = new Date().getFullYear() + '-' + String(new Date().getMonth() + 1).padStart(2, '0');
         const vendasMes = (dados[mesAtual] || []).filter(function(v) {
-          return v.data_venda && (parseFloat(v.valor_final) || 0) > 0;
+          return v.data_venda && (parseFloat(v.valor_final) || 0) > 0 && ehConsultorTime(v.consultor);
         });
 
         if (vendasMes.length > 0) {
@@ -1097,9 +1200,9 @@ function poll() {
         return;
       }
 
-      // Detecta vendas novas
+      // Detecta vendas novas (apenas do time comercial)
       const novas = Object.keys(todasVendas).filter(function(k) {
-        return !vendasConhecidas[k];
+        return !vendasConhecidas[k] && ehConsultorTime(todasVendas[k].consultor);
       });
 
       if (novas.length > 0) {
