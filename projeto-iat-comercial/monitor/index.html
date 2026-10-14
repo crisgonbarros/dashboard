@@ -341,14 +341,16 @@ html, body {
   background: linear-gradient(145deg, rgba(15,8,10,0.97) 0%, rgba(30,8,8,0.97) 100%);
   border: 2px solid rgba(220,30,30,0.7);
   border-radius: 24px;
-  padding: 48px 60px;
+  padding: 0;
   text-align: center;
   box-shadow:
     0 0 0 1px rgba(220,30,30,0.2),
     0 0 80px rgba(220,30,30,0.35),
     0 32px 80px rgba(0,0,0,0.7);
-  max-width: 720px;
+  max-width: 900px;
   width: 90vw;
+  min-height: 340px;
+  overflow: hidden;
 }
 
 #card-topo {
@@ -416,39 +418,79 @@ html, body {
 }
 
 /* ── FOTO DO CONSULTOR ── */
-.consultor-foto-wrap {
+
+/* Layout dos cards: duas colunas (foto | dados) */
+#card-inner,
+#ultima-inner {
   display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Coluna esquerda: foto */
+.card-foto-col {
+  width: 220px;
+  min-width: 160px;
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  background: rgba(0,0,0,0.3);
+}
+#ultima-inner .card-foto-col {
+  width: 170px;
+  min-width: 130px;
+}
+
+.consultor-foto-grande {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  filter: drop-shadow(4px 0 24px rgba(0,0,0,0.6));
+}
+.consultor-foto-fallback-grande {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(229,57,53,0.04);
+  overflow: hidden;
+}
+.consultor-foto-fallback-grande svg {
+  width: 85%;
+  height: auto;
+  display: block;
+  opacity: 0.18;
+  filter: drop-shadow(0 0 20px rgba(229,57,53,0.3));
+}
+
+/* Separador vertical */
+.card-divider-v {
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(229,57,53,0.4) 20%, rgba(229,57,53,0.4) 80%, transparent);
+  flex-shrink: 0;
+}
+
+/* Coluna direita: dados */
+.card-dados-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 18px;
-  margin-bottom: 0;
+  padding: 48px 48px;
+  text-align: center;
 }
-.consultor-foto {
-  width: 72px; height: 72px;
-  border-radius: 50%;
-  border: 2px solid rgba(229,57,53,0.6);
-  object-fit: cover;
-  background: rgba(229,57,53,0.12);
-  flex-shrink: 0;
-  box-shadow: 0 0 20px rgba(229,57,53,0.3);
-}
-.consultor-foto-fallback {
-  width: 72px; height: 72px;
-  border-radius: 50%;
-  border: 2px solid rgba(229,57,53,0.6);
-  background: rgba(229,57,53,0.15);
-  flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px;
-  font-weight: 900;
-  color: rgba(229,57,53,0.8);
-  text-transform: uppercase;
-}
-/* Versão menor para card de última venda */
-.consultor-foto.pequena,
-.consultor-foto-fallback.pequena {
-  width: 52px; height: 52px;
-  font-size: 20px;
+#ultima-inner .card-dados-col {
+  padding: 32px 36px;
 }
 
 /* borda piscando no card durante celebração */
@@ -477,14 +519,16 @@ html, body {
   background: linear-gradient(145deg, rgba(12,6,8,0.93) 0%, rgba(25,6,6,0.93) 100%);
   border: 1px solid rgba(220,30,30,0.35);
   border-radius: 20px;
-  padding: 32px 48px;
+  padding: 0;
   text-align: center;
   box-shadow:
     0 0 0 1px rgba(220,30,30,0.1),
     0 0 40px rgba(220,30,30,0.15),
     0 20px 60px rgba(0,0,0,0.6);
-  max-width: 580px;
+  max-width: 700px;
   width: 80vw;
+  min-height: 260px;
+  overflow: hidden;
 }
 #ultima-topo {
   font-size: 11px;
@@ -696,13 +740,18 @@ html, body {
 <!-- Card de última venda (persiste centralizado entre celebrações) -->
 <div id="card-ultima">
   <div id="ultima-inner">
-    <div id="ultima-topo">Última Venda Realizada</div>
-    <div id="ultima-valor">R$ 0,00</div>
-    <div id="ultima-label">venda confirmada</div>
-    <div id="ultima-divider"></div>
-    <div id="ultima-consultor-label">Consultor</div>
-    <div class="consultor-foto-wrap">
-      <div id="ultima-consultor-foto-wrap"></div>
+    <!-- Coluna esquerda: foto do consultor -->
+    <div class="card-foto-col">
+      <div id="ultima-consultor-foto-wrap"><div class="consultor-foto-fallback-grande"><svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg" fill="white"><ellipse cx="100" cy="62" rx="42" ry="48"/><path d="M8,280 C8,185 35,158 100,152 C165,158 192,185 192,280 Z"/></svg></div></div>
+    </div>
+    <div class="card-divider-v"></div>
+    <!-- Coluna direita: dados -->
+    <div class="card-dados-col">
+      <div id="ultima-topo">Última Venda Realizada</div>
+      <div id="ultima-valor">R$ 0,00</div>
+      <div id="ultima-label">venda confirmada</div>
+      <div id="ultima-divider"></div>
+      <div id="ultima-consultor-label">Consultor</div>
       <div id="ultima-consultor-nome">—</div>
     </div>
   </div>
@@ -711,14 +760,19 @@ html, body {
 <!-- Card de nova venda (celebração) -->
 <div id="card-venda">
   <div id="card-inner">
-    <div id="card-topo">Nova Venda Realizada</div>
-    <span id="card-emoji">🎉</span>
-    <div id="card-valor">R$ 0,00</div>
-    <div id="card-label-venda">venda confirmada</div>
-    <div id="card-divider"></div>
-    <div id="card-consultor-label">Consultor</div>
-    <div class="consultor-foto-wrap">
-      <div id="card-consultor-foto-wrap"></div>
+    <!-- Coluna esquerda: foto do consultor -->
+    <div class="card-foto-col">
+      <div id="card-consultor-foto-wrap"><div class="consultor-foto-fallback-grande"><svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg" fill="white"><ellipse cx="100" cy="62" rx="42" ry="48"/><path d="M8,280 C8,185 35,158 100,152 C165,158 192,185 192,280 Z"/></svg></div></div>
+    </div>
+    <div class="card-divider-v"></div>
+    <!-- Coluna direita: dados -->
+    <div class="card-dados-col">
+      <div id="card-topo">Nova Venda Realizada</div>
+      <span id="card-emoji">🎉</span>
+      <div id="card-valor">R$ 0,00</div>
+      <div id="card-label-venda">venda confirmada</div>
+      <div id="card-divider"></div>
+      <div id="card-consultor-label">Consultor</div>
       <div id="card-consultor-nome">—</div>
     </div>
   </div>
@@ -883,27 +937,27 @@ function atualizarObjetivo(dados) {
 }
 
 // ─── FOTO DO CONSULTOR ───────────────────────────────────────────────────────
-// Cria elemento <img> com fallback para círculo com inicial
-function criarElementoFoto(nome, pequena) {
-  const wrapId = pequena ? 'ultima-consultor-foto-wrap' : 'card-consultor-foto-wrap';
-  const wrap = document.getElementById(wrapId);
+// Cria <img> grande preenchendo a coluna esquerda do card, com fallback de inicial
+function criarElementoFoto(nome, idWrap) {
+  const wrap = document.getElementById(idWrap);
   if (!wrap) return;
   wrap.innerHTML = '';
 
   if (!ehConsultorTime(nome)) return; // Parceiro/Venda Direta: sem foto
 
-  const cls = pequena ? 'pequena' : '';
-
   const img = document.createElement('img');
   img.src = fotoConsultor(nome);
-  img.className = 'consultor-foto' + (cls ? ' ' + cls : '');
+  img.className = 'consultor-foto-grande';
   img.alt = nome;
 
-  // Se a imagem não carregar, substitui pelo fallback com inicial
+  // Se a imagem não carregar, substitui pela silhueta
   img.onerror = function() {
     const fb = document.createElement('div');
-    fb.className = 'consultor-foto-fallback' + (cls ? ' ' + cls : '');
-    fb.textContent = nome.trim().charAt(0).toUpperCase();
+    fb.className = 'consultor-foto-fallback-grande';
+    fb.innerHTML = '<svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg" fill="white">' +
+      '<ellipse cx="100" cy="62" rx="42" ry="48"/>' +
+      '<path d="M8,280 C8,185 35,158 100,152 C165,158 192,185 192,280 Z"/>' +
+      '</svg>';
     wrap.innerHTML = '';
     wrap.appendChild(fb);
   };
@@ -916,7 +970,7 @@ function mostrarUltimaVenda(venda) {
   if (!venda) return;
   document.getElementById('ultima-valor').textContent          = fmtValor(venda.valor_final);
   document.getElementById('ultima-consultor-nome').textContent = venda.consultor || 'Consultor';
-  criarElementoFoto(venda.consultor || '', true);
+  criarElementoFoto(venda.consultor || '', 'ultima-consultor-foto-wrap');
 
   const card = document.getElementById('card-ultima');
   card.classList.add('show');
@@ -1112,7 +1166,7 @@ function celebrar(venda) {
   // Preenche o card de celebração
   document.getElementById('card-valor').textContent          = fmtValor(venda.valor_final);
   document.getElementById('card-consultor-nome').textContent = venda.consultor || 'Consultor';
-  criarElementoFoto(venda.consultor || '', false);
+  criarElementoFoto(venda.consultor || '', 'card-consultor-foto-wrap');
 
   // Mostra card
   const cardEl = document.getElementById('card-venda');
