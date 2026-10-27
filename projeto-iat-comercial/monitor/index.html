@@ -554,7 +554,14 @@ html, body {
   color: rgba(255,255,255,0.4);
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
+}
+#ultima-data {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.28);
+  letter-spacing: 0.06em;
+  margin-bottom: 18px;
 }
 #ultima-divider {
   width: 40px; height: 1px;
@@ -769,6 +776,7 @@ html, body {
       <div id="ultima-topo">Última Venda Realizada</div>
       <div id="ultima-valor">R$ 0,00</div>
       <div id="ultima-label">venda confirmada</div>
+      <div id="ultima-data">—</div>
       <div id="ultima-divider"></div>
       <div id="ultima-consultor-label">Consultor</div>
       <div id="ultima-consultor-nome">—</div>
@@ -820,7 +828,7 @@ const CONSULTORES_TIME = ['beatris', 'caren', 'larissa', 'paulo enrique', 'vitó
 function ehConsultorTime(nome) {
   if (!nome) return false;
   const n = nome.trim().toLowerCase()
-    .normalize('NFD').replace(/[̀-ͯ]/g, '');
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   // Ignora "parceiro", "venda direta" e variações
   if (!n || n === 'parceiro' || n.indexOf('venda') !== -1) return false;
   return true;
@@ -830,7 +838,7 @@ function ehConsultorTime(nome) {
 // Ex: "Paulo Enrique" → "paulo-enrique", "Vitória" → "vitoria"
 function consultorSlug(nome) {
   return nome.trim().toLowerCase()
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/\s+/g, '-');
 }
 
@@ -986,10 +994,19 @@ function criarElementoFoto(nome, idWrap) {
 }
 
 // ─── ATUALIZAR CARD ÚLTIMA VENDA ─────────────────────────────────────────────
+function fmtDataCompleta(dataStr) {
+  // dataStr: "AAAA-MM-DD" → "DD/MM/AAAA"
+  if (!dataStr) return '';
+  const partes = dataStr.split('-');
+  if (partes.length >= 3) return partes[2] + '/' + partes[1] + '/' + partes[0];
+  return dataStr;
+}
+
 function mostrarUltimaVenda(venda) {
   if (!venda) return;
   document.getElementById('ultima-valor').textContent          = fmtValor(venda.valor_final);
   document.getElementById('ultima-consultor-nome').textContent = venda.consultor || 'Consultor';
+  document.getElementById('ultima-data').textContent           = fmtDataCompleta(venda.data_venda);
   criarElementoFoto(venda.consultor || '', 'ultima-consultor-foto-wrap');
 
   const card = document.getElementById('card-ultima');
