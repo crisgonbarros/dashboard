@@ -283,11 +283,14 @@ html, body {
   margin: 0 auto 28px;
 }
 #ativacao-termo {
-  font-size: 13.5px;
-  line-height: 1.7;
-  color: rgba(255,255,255,0.62);
-  margin-bottom: 36px;
-  padding: 0 4px;
+  display: flex; align-items: flex-start; gap: 10px;
+  max-width: 300px; margin: 0 auto 22px;
+  font-size: 12.5px; line-height: 1.55; text-align: left;
+  color: rgba(255,255,255,0.62); cursor: pointer;
+}
+#ativacao-termo input {
+  flex-shrink: 0; width: 17px; height: 17px; margin-top: 1px;
+  accent-color: #e53935; cursor: pointer;
 }
 #ativacao-login { display:flex; flex-direction:column; gap:10px; margin:0 auto 22px; max-width:300px; }
 #ativacao-login input {
@@ -726,15 +729,14 @@ html, body {
     <div id="ativacao-titulo">Monitor de Vendas</div>
     <div id="ativacao-subtitulo">Projeto IAT · Ao Vivo</div>
     <div id="ativacao-divider"></div>
-    <div id="ativacao-termo">
-      Esta página utiliza áudio e atualização automática para
-      exibir notificações em tempo real das vendas do Projeto IAT.
-      Ao continuar, você autoriza esses recursos.
-    </div>
     <div id="ativacao-login">
       <input type="text" id="login-usuario" placeholder="Usuário" autocomplete="username">
       <input type="password" id="login-senha" placeholder="Senha" autocomplete="current-password">
     </div>
+    <label id="ativacao-termo">
+      <input type="checkbox" id="aceite-som">
+      <span>Autorizo o uso de áudio e a atualização automática para exibir as vendas do Projeto IAT em tempo real.</span>
+    </label>
     <div id="ativacao-erro"></div>
     <button id="btn-acessar">Acessar</button>
   </div>
@@ -925,6 +927,11 @@ function garantirAudioCtx() {
   });
 
   btn.addEventListener('click', function() {
+    if (!document.getElementById('aceite-som').checked) {
+      erro.style.display = '';
+      erro.textContent = 'Marque a autorização de áudio para continuar.';
+      return;
+    }
     if (!jaLogado) {
       if (inUser.value.trim() !== VALID_USER || inPass.value !== VALID_PASS) {
         erro.textContent = 'Usuário ou senha incorretos.';
