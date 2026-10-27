@@ -844,6 +844,18 @@ html, body {
 <script>
 // ─── CONFIGURAÇÃO ────────────────────────────────────────────────────────────
 const WEBAPP_URL    = 'https://script.google.com/macros/s/AKfycbx5wlWgYNW0E3-YZNeAVqDTPwLZfSNmxvsuYEAL3Zl1ob0uZbQna9kHmTPl8KTdPWPpyQ/exec?nocache=1';
+
+// Credenciais: conferidas no Apps Script (não ficam no código). Guardadas só nesta aba.
+const CRED_KEY = 'iat_com_cred';
+function lerCred() {
+  try { return JSON.parse(sessionStorage.getItem(CRED_KEY) || 'null'); } catch (e) { return null; }
+}
+function salvarCred(c) { try { sessionStorage.setItem(CRED_KEY, JSON.stringify(c)); } catch (e) {} }
+function limparCred() { try { sessionStorage.removeItem(CRED_KEY); } catch (e) {} }
+function urlDados(c) {
+  c = c || lerCred() || {};
+  return WEBAPP_URL + '&usuario=' + encodeURIComponent(c.u || '') + '&senha=' + encodeURIComponent(c.p || '');
+}
 const POLL_INTERVAL = 20 * 1000;   // 20 segundos
 const CARD_DURACAO  = 20 * 1000;   // card de celebração visível por 20 segundos
 const META_MES      = 150000;      // Objetivo do mês em R$
@@ -910,37 +922,26 @@ function garantirAudioCtx() {
   const btn = document.getElementById('btn-acessar');
   if (!el || !btn) return;
 
-  // Login (mesmas credenciais do painel)
-  const VALID_USER  = 'Macelista';
-  const VALID_PASS  = 'Dash@2513';
-  const SESSION_KEY = 'mkd_auth';
   const boxLogin = document.getElementById('ativacao-login');
   const erro     = document.getElementById('ativacao-erro');
   const inUser   = document.getElementById('login-usuario');
   const inPass   = document.getElementById('login-senha');
-  let jaLogado = false;
-  try { jaLogado = sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) {}
-  if (jaLogado) { boxLogin.style.display = 'none'; erro.style.display = 'none'; }
+  if (lerCred()) boxLogin.style.display = 'none';
 
   [inUser, inPass].forEach(function(i) {
     i.addEventListener('keydown', function(e) { if (e.key === 'Enter') btn.click(); });
   });
 
   btn.addEventListener('click', function() {
+    if (btn.disabled) return;
     if (!document.getElementById('aceite-som').checked) {
-      erro.style.display = '';
       erro.textContent = 'Marque a autorização de áudio para continuar.';
       return;
     }
-    if (!jaLogado) {
-      if (inUser.value.trim() !== VALID_USER || inPass.value !== VALID_PASS) {
-        erro.textContent = 'Usuário ou senha incorretos.';
-        inPass.value = '';
-        return;
-      }
-      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
-      jaLogado = true;
-    }
+    const cred = lerCred() || { u: inUser.value.trim(), p: inPass.value };
+    if (!cred.u || !cred.p) { erro.textContent = 'Informe usuário e senha.'; return; }
+
+    // Libera o áudio ainda dentro do clique (exigência do navegador)
     garantirAudioCtx();
     const ctx = audioCtx;
     const buf = ctx.createBuffer(1, 1, ctx.sampleRate);
@@ -949,10 +950,33 @@ function garantirAudioCtx() {
     src.connect(ctx.destination);
     src.start(0);
 
-    el.classList.add('saindo');
-    setTimeout(function() { el.style.display = 'none'; }, 600);
-
-    iniciarPolling();
+    // Confere usuário e senha no servidor antes de liberar
+    btn.disabled = true;
+    const txtBtn = btn.textContent;
+    btn.textContent = 'Verificando…';
+    erro.textContent = '';
+    fetch(urlDados(cred))
+      .then(function(r) { return r.json(); })
+      .then(function(dados) {
+        if (dados && dados.erro === 'auth') {
+          limparCred();
+          boxLogin.style.display = '';
+          inPass.value = '';
+          erro.textContent = 'Usuário ou senha incorretos.';
+          return;
+        }
+        salvarCred(cred);
+        el.classList.add('saindo');
+        setTimeout(function() { el.style.display = 'none'; }, 600);
+        iniciarPolling();
+      })
+      .catch(function() {
+        erro.textContent = 'Sem conexão com o servidor. Tente de novo.';
+      })
+      .finally(function() {
+        btn.disabled = false;
+        btn.textContent = txtBtn;
+      });
   });
 })();
 
@@ -1323,12 +1347,18 @@ function celebrar(venda) {
 
 // ─── POLLING ─────────────────────────────────────────────────────────────────
 function poll() {
-  fetch(WEBAPP_URL)
+  fetch(urlDados())
     .then(function(r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
     })
     .then(function(dados) {
+      if (dados && dados.erro === 'auth') {
+        // senha trocada: volta para a tela de acesso
+        limparCred();
+        location.reload();
+        return;
+      }
       if (dados && dados.error) throw new Error(dados.message);
 
       const todasVendas = {};

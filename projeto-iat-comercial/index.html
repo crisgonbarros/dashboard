@@ -130,9 +130,30 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .btn-refresh:active{opacity:.7}
 .btn-refresh.spinning svg{animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+#loginOverlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:none;align-items:center;justify-content:center;padding:24px}
+#loginOverlay.show{display:flex}
+.login-box{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:32px 28px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:14px}
+.login-box h2{font-size:17px;font-weight:700;text-align:center}
+.login-box p{font-size:12px;color:var(--muted);text-align:center;margin-top:-8px}
+.login-box label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.login-box input{width:100%;margin-top:6px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:15px;padding:10px 12px;outline:none}
+.login-box input:focus{border-color:var(--accent)}
+.login-box button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:11px;font-size:15px;font-weight:600;cursor:pointer}
+.login-box button:disabled{opacity:.6;cursor:default}
+#loginErro{font-size:12px;color:var(--red);text-align:center;min-height:16px}
 </style>
 </head>
 <body>
+<div id="loginOverlay">
+  <form class="login-box" id="loginForm" autocomplete="on">
+    <h2>Dashboard Comercial</h2>
+    <p>Projeto IAT · acesso restrito</p>
+    <div><label for="loginUsuario">Usuário</label><input id="loginUsuario" type="text" autocomplete="username"></div>
+    <div><label for="loginSenha">Senha</label><input id="loginSenha" type="password" autocomplete="current-password"></div>
+    <div id="loginErro"></div>
+    <button type="submit" id="loginBtn">Entrar</button>
+  </form>
+</div>
 <header>
   <div class="header-top">
     <div class="logo">
@@ -229,6 +250,17 @@ tr:hover td{background:rgba(255,255,255,.02)}
 // URL do Apps Script Web App (atualiza automaticamente da planilha Google Sheets)
 const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbx5wlWgYNW0E3-YZNeAVqDTPwLZfSNmxvsuYEAL3Zl1ob0uZbQna9kHmTPl8KTdPWPpyQ/exec';
 let MESES = {};  // será populado via fetch()
+
+// Credenciais: conferidas no Apps Script (não ficam no código). Guardadas só nesta aba.
+const CRED_KEY = 'iat_com_cred';
+function lerCred(){ try{ return JSON.parse(sessionStorage.getItem(CRED_KEY)||'null'); }catch(e){ return null; } }
+function salvarCred(c){ try{ sessionStorage.setItem(CRED_KEY, JSON.stringify(c)); }catch(e){} }
+function limparCred(){ try{ sessionStorage.removeItem(CRED_KEY); }catch(e){} }
+function urlDados(){
+  const c = lerCred() || {};
+  return WEBAPP_URL + (WEBAPP_URL.indexOf('?')<0 ? '?' : '&') +
+    'usuario=' + encodeURIComponent(c.u||'') + '&senha=' + encodeURIComponent(c.p||'');
+}
 
 // ── Nomes dos meses em português ─────────────────────────────────────────────
 const NOME_MES = {
@@ -603,12 +635,19 @@ function mkChart(id,type,labels,datasets,extraOpts,legendId,legendItems){
       setTimeout(function(){ if(_loadMsg) setLoadMsg('Quase lá, pode demorar até 20s na primeira vez…'); }, 12000);
     }
 
-    fetchComTimeout(WEBAPP_URL, 25000)
+    fetchComTimeout(urlDados(), 25000)
       .then(function(res){
         if(!res.ok) throw new Error('HTTP ' + res.status);
         return res.json();
       })
       .then(function(dados){
+        if(dados && dados.erro === 'auth'){
+          if(btn) btn.classList.remove('spinning');
+          limparCred();
+          hideLoadMsg();
+          mostrarLogin('Usuário ou senha incorretos.');
+          return;
+        }
         if(dados && dados.error){
           throw new Error(dados.message || 'Erro no servidor');
         }
@@ -671,12 +710,34 @@ function mkChart(id,type,labels,datasets,extraOpts,legendId,legendItems){
       });
   }
 
+  // ── Login ────────────────────────────────────────────────────────────────────
+  function mostrarLogin(msg){
+    document.getElementById('loginErro').textContent = msg || '';
+    document.getElementById('loginSenha').value = '';
+    document.getElementById('loginOverlay').classList.add('show');
+    document.getElementById('loginUsuario').focus();
+  }
+  document.getElementById('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const u = document.getElementById('loginUsuario').value.trim();
+    const p = document.getElementById('loginSenha').value;
+    if(!u || !p){ document.getElementById('loginErro').textContent = 'Informe usuário e senha.'; return; }
+    salvarCred({u:u, p:p});
+    document.getElementById('loginOverlay').classList.remove('show');
+    showLoading();
+    refreshDados();
+  });
+
   // Carregamento inicial
-  showLoading();
-  refreshDados();
+  if(lerCred()){
+    showLoading();
+    refreshDados();
+  } else {
+    mostrarLogin();
+  }
 
   // Auto-refresh a cada 120 segundos (silencioso, sem overlay, sem pop-up de erro)
-  setInterval(function(){ refreshDados('auto'); }, 120 * 1000);
+  setInterval(function(){ if(lerCred()) refreshDados('auto'); }, 120 * 1000);
 
 })();
 </script>
