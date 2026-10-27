@@ -836,10 +836,25 @@ function ehConsultorTime(nome) {
 
 // Converte nome do consultor para slug do arquivo de foto
 // Ex: "Paulo Enrique" → "paulo-enrique", "Vitória" → "vitoria"
+// Mapa de fragmento do nome (normalizado) -> slug do arquivo de foto
+const FOTO_MAP = {
+  'beatris':       'beatris',
+  'caren':         'caren',
+  'larissa':       'larissa',
+  'paulo enrique': 'paulo-enrique',
+  'paulo':         'paulo-enrique',
+  'vitoria':       'vitoria',
+};
+
 function consultorSlug(nome) {
-  return nome.trim().toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/\s+/g, '-');
+  var norm = nome.trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  for (var chave in FOTO_MAP) {
+    if (norm === chave || norm.indexOf(chave) === 0) {
+      return FOTO_MAP[chave];
+    }
+  }
+  return norm.replace(/\s+/g, '-');
 }
 
 // Caminho da foto do consultor (relativo ao monitor.html)
