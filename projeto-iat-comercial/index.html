@@ -484,7 +484,9 @@ function renderAll(rows, mesSelecionado){
 
   // TABELA
   document.getElementById('tableCount').textContent=`(${valid.length})`;
-  const sorted=[...valid].sort((a,b)=>b.data_venda.localeCompare(a.data_venda));
+  // Ordem de lançamento (carimbo do formulário); sem carimbo, usa data da venda + linha
+  const chaveLanc=r=>(r.lancamento||r.data_venda||'')+'|'+String(r.linha||0).padStart(6,'0');
+  const sorted=[...valid].sort((a,b)=>chaveLanc(b).localeCompare(chaveLanc(a)));
   document.getElementById('tableBody').innerHTML=sorted.map(r=>{
     const stMap={validado:['pill-green','Validado'],pendencia:['pill-yellow','Pendência'],nao_conferido:['pill-gray','Aguardando']};
     const [stClass,stLabel]=stMap[r.status]||['pill-gray','Aguardando'];

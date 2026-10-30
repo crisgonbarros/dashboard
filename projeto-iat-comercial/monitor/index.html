@@ -1345,6 +1345,11 @@ function celebrar(venda) {
   }, CARD_DURACAO);
 }
 
+// Ordem de lançamento (carimbo do formulário); sem carimbo, usa data da venda + linha
+function chaveLanc(v) {
+  return (v.lancamento || v.data_venda || '') + '|' + String(v.linha || 0).padStart(6, '0');
+}
+
 // ─── POLLING ─────────────────────────────────────────────────────────────────
 function poll() {
   fetch(urlDados())
@@ -1382,9 +1387,9 @@ function poll() {
         });
 
         if (vendasMes.length > 0) {
-          // Ordena por data e usa a mais recente como última venda
+          // Ordena pela ordem de lançamento e usa a última lançada como última venda
           vendasMes.sort(function(a, b) {
-            return (a.data_venda || '').localeCompare(b.data_venda || '');
+            return chaveLanc(a).localeCompare(chaveLanc(b));
           });
           const ultimaDoCarga = vendasMes[vendasMes.length - 1];
           ultimaVenda = ultimaDoCarga;
@@ -1406,8 +1411,9 @@ function poll() {
       });
 
       if (novas.length > 0) {
+        // Mais de uma venda nova no mesmo ciclo: celebra a última lançada
         novas.sort(function(a, b) {
-          return (todasVendas[b].valor_final || 0) - (todasVendas[a].valor_final || 0);
+          return chaveLanc(todasVendas[b]).localeCompare(chaveLanc(todasVendas[a]));
         });
         celebrar(todasVendas[novas[0]]);
       }
