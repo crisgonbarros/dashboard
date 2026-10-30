@@ -1031,15 +1031,17 @@ function atualizarObjetivo(dados) {
     return acc + (parseFloat(v.valor_final) || 0);
   }, 0);
 
-  const pct     = Math.min(Math.round((totalMes / META_MES) * 100), 100);
-  const pctReal = Math.min((totalMes / META_MES) * 100, 100);
+  // Só mostra 100% quando bater a meta de verdade; antes disso, no máximo 99,9%
+  const bateu   = totalMes >= META_MES;
+  const pctReal = bateu ? 100 : Math.min((totalMes / META_MES) * 100, 99.9);
+  const pct     = bateu ? 100 : Math.min(Math.round(pctReal), 99.9);
 
   document.getElementById('objetivo-realizado').textContent = fmtValorCurto(totalMes);
 
   const fill = document.getElementById('objetivo-barra-fill');
   const pctEl = document.getElementById('objetivo-pct');
   fill.style.width = pctReal.toFixed(1) + '%';
-  pctEl.textContent = pct + '%';
+  pctEl.textContent = String(pct).replace('.', ',') + '%';
 
   if (pct >= 100) {
     fill.style.background = 'linear-gradient(90deg, #2e7d32 0%, #43a047 100%)';
